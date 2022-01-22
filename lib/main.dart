@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(fontFamily: 'Roboto', primaryColor: Colors.green),
-      initialRoute: Routes.VIDEO_CALL,
+      initialRoute: Routes.SPLASH,
       getPages: AppPages.pages,
       defaultTransition: Transition.native,
     );

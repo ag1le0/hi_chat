@@ -28,10 +28,9 @@ class SettingsController extends GetxController {
           bearToken: Session.instance.tokenResp!.accessToken,
           data: {
             'deviceCode': '9cb1d4fad4254f099f03c05ebc04476b'
-          }).then((value) async {
-        Get.back();
-        Get.offAllNamed(Routes.LOGIN);
-      });
+          }).then((value) async {});
+      Get.back();
+      Get.offAllNamed(Routes.LOGIN);
     });
   }
 }

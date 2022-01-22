@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:pea_chat/app/data/model/user.dart';
 import 'package:pea_chat/app/data/provider/local/session.dart';
+import 'package:pea_chat/app/data/provider/remote/api.dart';
 import 'package:pea_chat/app/modules/user_module/user_controller.dart';
 /**
  * GetX Template Generator - fb.com/htngu.99
@@ -15,13 +16,10 @@ class UserPage extends GetView<UserController> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
-        extendBodyBehindAppBar: true,
-        extendBody: true,
         appBar: AppBar(
           systemOverlayStyle: SystemUiOverlayStyle(
               statusBarColor: Colors.transparent,
               statusBarIconBrightness: Brightness.dark),
-          backgroundColor: Colors.transparent,
           elevation: 0,
         ),
         body: SingleChildScrollView(
@@ -94,7 +92,7 @@ class ProfileHeader extends GetWidget<UserController> {
           Obx(
             () => CachedNetworkImage(
               fit: BoxFit.cover,
-              imageUrl: 'https://10.224.81.70:6443' +
+              imageUrl: Api.host +
                   ((user.value.avatar != null)
                       ? user.value.avatar!.thumbUrl!
                       : '/peachat/assets/dist/img/default-user-avatar.jpg'),
@@ -103,8 +101,8 @@ class ProfileHeader extends GetWidget<UserController> {
                     'Bearer ' + Session.instance.tokenResp!.accessToken!
               },
               errorWidget: (ctx, url, error) => CachedNetworkImage(
-                imageUrl:
-                    'https://10.224.81.70:6443/peachat/assets/dist/img/default-user-avatar.jpg',
+                imageUrl: Api.host +
+                    '/peachat/assets/dist/img/default-user-avatar.jpg',
                 httpHeaders: {
                   'Authorization':
                       'Bearer ' + Session.instance.tokenResp!.accessToken!

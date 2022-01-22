@@ -93,8 +93,14 @@ class ChatController extends GetxController {
       'text': inputTextController.text,
     };
     inputTextController.clear();
-    Api.instance.sendText(
-        bearToken: Session.instance.tokenResp!.accessToken, data: data);
+    Api.instance
+        .sendText(
+            bearToken: Session.instance.tokenResp!.accessToken, data: data)
+        .then((value) {
+      listMessage.insert(0, value!.result!);
+    }).catchError((onError) {
+      log(onError.toString());
+    });
   }
 
   void sendMedia(File image) async {
@@ -112,7 +118,8 @@ class ChatController extends GetxController {
         .sendMedia(
             bearToken: Session.instance.tokenResp!.accessToken, data: formData)
         .then((value) {
-      log(value!.toJson((value) => value.toJson()).toString());
+      //log(value!.toJson((value) => value.toJson()).toString());
+      listMessage.insert(0, value!.result!);
     }).catchError((onError) {
       log(onError.toString());
     });

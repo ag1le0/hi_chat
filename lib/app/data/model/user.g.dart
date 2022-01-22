@@ -22,7 +22,7 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       factory: json['factory'] as String?,
       department: json['department'] as String?,
       title: json['title'] as String?,
-      level: json['level'] != null ? int.parse(json['level']) : null,
+      level: json['level'],
       friend: json['friend'] as bool?,
       pwdExpired: json['pwdExpired'] as bool?,
       pwdExpiredTime: json['pwdExpiredTime'] == null
@@ -58,7 +58,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'pwdExpiredTime': instance.pwdExpiredTime?.toBaseString(),
       'pwdExpired': instance.pwdExpired,
       'friend': instance.friend,
-      'level': instance.level.toString(),
+      'level': instance.level,
       'title': instance.title,
       'department': instance.department,
       'factory': instance.factory,

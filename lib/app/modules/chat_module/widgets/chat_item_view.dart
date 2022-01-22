@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:pea_chat/app/data/model/message_response.dart';
 import 'package:pea_chat/app/data/provider/local/session.dart';
+import 'package:pea_chat/app/data/provider/remote/api.dart';
 import 'package:pea_chat/app/modules/chat_module/chat_page.dart';
 import 'package:pea_chat/app/modules/chat_module/widgets/image_full_screen.dart';
 import 'package:pea_chat/app/utils/extension.dart';
@@ -69,7 +70,7 @@ class ChatItemView extends StatelessWidget {
                                 clipBehavior: Clip.antiAlias,
                                 child: CachedNetworkImage(
                                   fit: BoxFit.cover,
-                                  imageUrl: 'https://10.224.81.70:6443' +
+                                  imageUrl: Api.host +
                                       ((messageResponse.author!.avatar != null)
                                           ? messageResponse
                                               .author!.avatar!.thumbUrl!
@@ -81,7 +82,7 @@ class ChatItemView extends StatelessWidget {
                                   errorWidget: (ctx, url, error) =>
                                       CachedNetworkImage(
                                     imageUrl:
-                                        'https://10.224.81.70:6443/peachat/assets/dist/img/default-user-avatar.jpg',
+                                        '${Api.host}/peachat/assets/dist/img/default-user-avatar.jpg',
                                     httpHeaders: {
                                       'Authorization': 'Bearer ' +
                                           Session
@@ -161,7 +162,7 @@ class ChatItemView extends StatelessWidget {
                                       Navigator.of(context).push(
                                         MaterialPageRoute(
                                           builder: (_) => ImageFullScreen(
-                                            url: 'https://10.224.81.70:6443' +
+                                            url: Api.host +
                                                 messageResponse
                                                     .mediaMessage!.media!.url!,
                                             header: {
@@ -176,7 +177,7 @@ class ChatItemView extends StatelessWidget {
                                     child: CachedNetworkImage(
                                       height: Get.height / 3,
                                       fit: BoxFit.fitHeight,
-                                      imageUrl: 'https://10.224.81.70:6443' +
+                                      imageUrl: Api.host +
                                           messageResponse
                                               .mediaMessage!.media!.url!,
                                       httpHeaders: {
@@ -274,7 +275,7 @@ class ChatItemView extends StatelessWidget {
                                       CachedNetworkImage(
                                         height: Get.height / 3,
                                         fit: BoxFit.fitHeight,
-                                        imageUrl: 'https://10.224.81.70:6443' +
+                                        imageUrl: Api.host +
                                             messageResponse
                                                 .mediaMessage!.media!.url!,
                                         httpHeaders: {

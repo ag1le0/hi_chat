@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pea_chat/app/data/model/group_response.dart';
 import 'package:pea_chat/app/data/provider/local/session.dart';
+import 'package:pea_chat/app/data/provider/remote/api.dart';
 import 'package:pea_chat/app/modules/home_module/widgets/dot.dart';
 import 'package:pea_chat/app/routes/app_pages.dart';
 import 'package:pea_chat/app/utils/extension.dart';
@@ -53,7 +54,7 @@ class GroupItem extends StatelessWidget {
                               clipBehavior: Clip.antiAlias,
                               child: CachedNetworkImage(
                                 fit: BoxFit.cover,
-                                imageUrl: 'https://10.224.81.70:6443' +
+                                imageUrl: Api.host +
                                     ((value.value.avatar != null)
                                         ? value.value.avatar!.thumbUrl!
                                         : '/peachat/assets/dist/img/default-user-avatar.jpg'),
@@ -64,7 +65,7 @@ class GroupItem extends StatelessWidget {
                                 errorWidget: (ctx, url, error) =>
                                     CachedNetworkImage(
                                   imageUrl:
-                                      'https://10.224.81.70:6443/peachat/assets/dist/img/default-user-avatar.jpg',
+                                      '${Api.host}/peachat/assets/dist/img/default-user-avatar.jpg',
                                   errorWidget: (_, __, ___) => SizedBox(),
                                 ),
                               ),

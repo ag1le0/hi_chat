@@ -22,7 +22,7 @@ class User {
   String? _factory;
   String? _department;
   String? _title;
-  int? _level;
+  dynamic _level;
   bool? _friend;
   bool? _pwdExpired;
   DateTime? _pwdExpiredTime;
@@ -55,7 +55,7 @@ class User {
     String? factory,
     String? department,
     String? title,
-    int? level,
+    dynamic level,
     bool? friend,
     bool? pwdExpired,
     DateTime? pwdExpiredTime,
@@ -175,9 +175,9 @@ class User {
     _friend = value;
   }
 
-  int? get level => _level;
+  get level => _level;
 
-  set level(int? value) {
+  set level(dynamic value) {
     _level = value;
   }
 

@@ -1,14 +1,14 @@
 import 'dart:convert';
 
-TokenResp tokenRespFromJson(String str) =>
-    TokenResp.fromJson(json.decode(str));
+TokenResp tokenRespFromJson(String str) => TokenResp.fromJson(json.decode(str));
 
 String tokenRespToJson(TokenResp data) => json.encode(data.toJson());
+
 class TokenResp {
   String? accessToken;
   String? tokenType;
   String? refreshToken;
-  int? expiresIn;
+  String? expiresIn;
   String? scope;
   String? jti;
 
@@ -32,11 +32,11 @@ class TokenResp {
     );
   }
   Map<String, dynamic> toJson() => {
-    "access_token": accessToken,
-    "token_type": tokenType,
-    "expires_in": expiresIn,
-    "refresh_token": refreshToken,
-    "scope": scope,
-    "jti": jti,
-  };
+        "access_token": accessToken,
+        "token_type": tokenType,
+        "expires_in": expiresIn,
+        "refresh_token": refreshToken,
+        "scope": scope,
+        "jti": jti,
+      };
 }

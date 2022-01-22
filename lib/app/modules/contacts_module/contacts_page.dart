@@ -140,7 +140,7 @@ class ContactsPage extends GetView<ContactsController> {
                                                           Clip.antiAlias,
                                                       child: CachedNetworkImage(
                                                         fit: BoxFit.cover,
-                                                        imageUrl: 'https://10.224.81.70:6443' +
+                                                        imageUrl: Api.host +
                                                             ((element.avatar !=
                                                                     null)
                                                                 ? element
@@ -159,7 +159,7 @@ class ContactsPage extends GetView<ContactsController> {
                                                                 error) =>
                                                             CachedNetworkImage(
                                                           imageUrl:
-                                                              'https://10.224.81.70:6443/peachat/assets/dist/img/default-user-avatar.jpg',
+                                                              '${Api.host}/peachat/assets/dist/img/default-user-avatar.jpg',
                                                           errorWidget:
                                                               (_, __, ___) =>
                                                                   SizedBox(),

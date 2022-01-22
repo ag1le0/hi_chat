@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:pea_chat/app/data/provider/local/session.dart';
+import 'package:pea_chat/app/data/provider/remote/api.dart';
 import 'package:pea_chat/app/modules/settings_module/settings_controller.dart';
 /**
  * GetX Template Generator - fb.com/htngu.99
@@ -266,7 +267,7 @@ class ProfileHeader extends StatelessWidget {
                   clipBehavior: Clip.antiAlias,
                   child: CachedNetworkImage(
                     fit: BoxFit.cover,
-                    imageUrl: 'https://10.224.81.70:6443' +
+                    imageUrl: Api.host +
                         ((Session.instance.user!.avatar != null)
                             ? Session.instance.user!.avatar!.thumbUrl!
                             : '/peachat/assets/dist/img/default-user-avatar.jpg'),
@@ -275,8 +276,8 @@ class ProfileHeader extends StatelessWidget {
                           'Bearer ' + Session.instance.tokenResp!.accessToken!
                     },
                     errorWidget: (ctx, url, error) => CachedNetworkImage(
-                      imageUrl:
-                          'https://10.224.81.70:6443/peachat/assets/dist/img/default-user-avatar.jpg',
+                      imageUrl: Api.host +
+                          '/peachat/assets/dist/img/default-user-avatar.jpg',
                       httpHeaders: {
                         'Authorization':
                             'Bearer ' + Session.instance.tokenResp!.accessToken!

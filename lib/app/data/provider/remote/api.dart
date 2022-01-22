@@ -14,8 +14,8 @@ import 'package:pea_chat/app/data/model/user.dart';
 import 'package:pea_chat/app/data/model/user_channel.dart';
 
 class Api {
-  static const String baseUrl = 'https://10.224.81.70:6443/peachat/';
-  static const String host = "https://10.224.81.70:6443";
+  static const String baseUrl = 'http://10.10.1.14:8988/peachat';
+  static const String host = "http://10.10.1.14:8988";
   final _dio = Dio();
 
   Api._privateConstructor();
@@ -28,7 +28,7 @@ class Api {
   Future<ListResponse<GroupResponse>?> groupList({bearToken}) async {
     try {
       var res = await _dio
-          .get(baseUrl + 'api/group/list',
+          .get('$baseUrl/api/group/list',
               options: Options(headers: {
                 'Authorization': 'Bearer $bearToken',
               }))
@@ -44,7 +44,7 @@ class Api {
       {bearToken, required int id}) async {
     try {
       var res = await _dio
-          .get(baseUrl + 'api/group/$id',
+          .get('$baseUrl/api/group/$id',
               options: Options(headers: {
                 'Authorization': 'Bearer $bearToken',
               }))
@@ -59,7 +59,7 @@ class Api {
   Future<ListResponse<MessageResponse>?> getMessage({bearToken, params}) async {
     try {
       var res = await _dio
-          .get(baseUrl + 'api/group/message',
+          .get('$baseUrl/api/group/message',
               options: Options(
                 headers: {
                   'Authorization': 'Bearer $bearToken',
@@ -77,7 +77,7 @@ class Api {
   Future<ListResponse<bool>?> readMessage({bearToken, groupId}) async {
     try {
       var res = await _dio
-          .post(baseUrl + 'api/group/read-message',
+          .post('$baseUrl/api/group/read-message',
               options: Options(
                 headers: {
                   'Authorization': 'Bearer $bearToken',
@@ -95,7 +95,7 @@ class Api {
       {bearToken, idFriend}) async {
     try {
       var res = await _dio
-          .post(baseUrl + 'api/group/create-friend',
+          .post('$baseUrl/api/group/create-friend',
               options: Options(
                 headers: {
                   'Authorization': 'Bearer $bearToken',
@@ -113,7 +113,7 @@ class Api {
   Future<CommonResponse<MessageResponse>?> sendText({bearToken, data}) async {
     try {
       var res = await _dio
-          .post(baseUrl + 'api/group/send-text',
+          .post('$baseUrl/api/group/send-text',
               options: Options(
                 headers: {
                   'Authorization': 'Bearer $bearToken',
@@ -131,7 +131,7 @@ class Api {
   Future<CommonResponse<MessageResponse>?> sendMedia({bearToken, data}) async {
     try {
       var res = await _dio
-          .post(baseUrl + 'api/group/send-media',
+          .post('$baseUrl/api/group/send-media',
               options: Options(
                 headers: {
                   'Authorization': 'Bearer $bearToken',
@@ -149,7 +149,7 @@ class Api {
   Future<CommonResponse<GroupResponse>?> createGroup({bearToken, data}) async {
     try {
       var res = await _dio
-          .post(baseUrl + 'api/group/create-normal',
+          .post('$baseUrl/api/group/create-normal',
               options: Options(
                 headers: {
                   'Authorization': 'Bearer $bearToken',
@@ -167,7 +167,7 @@ class Api {
   Future<ListResponse<User>?> searchUser({bearToken, query}) async {
     try {
       var res = await _dio
-          .post(baseUrl + 'api/user/search',
+          .post('$baseUrl/api/user/search',
               options: Options(
                 headers: {
                   'Authorization': 'Bearer $bearToken',
@@ -187,7 +187,7 @@ class Api {
       {bearToken, data}) async {
     try {
       var res = await _dio
-          .post(baseUrl + 'api/user/channel/register',
+          .post('$baseUrl/api/user/channel/register',
               options: Options(
                 headers: {
                   'Authorization': 'Bearer $bearToken',
@@ -205,7 +205,7 @@ class Api {
   Future<CommonResponse<bool>?> unregisterChannel({bearToken, data}) async {
     try {
       var res = await _dio
-          .post(baseUrl + 'api/user/channel/unregister',
+          .post('$baseUrl/api/user/channel/unregister',
               options: Options(
                 headers: {
                   'Authorization': 'Bearer $bearToken',
@@ -223,7 +223,7 @@ class Api {
   Future<ListResponse<User>?> getFriendList({bearToken}) async {
     try {
       var res = await _dio
-          .get(baseUrl + 'api/user/friend',
+          .get('$baseUrl/api/user/friend',
               options: Options(headers: {
                 'Authorization': 'Bearer $bearToken',
               }))
@@ -238,7 +238,7 @@ class Api {
   Future<CommonResponse<int>?> addFriendRequestNumber({bearToken}) async {
     try {
       var res = await _dio
-          .get(baseUrl + 'api/user/add-friend-request-number',
+          .get('$baseUrl/api/user/add-friend-request-number',
               options: Options(headers: {
                 'Authorization': 'Bearer $bearToken',
               }))
@@ -258,28 +258,26 @@ class Api {
       required String otp}) async {
     try {
       log({
-        "grant_type": grantType,
         "username": userName,
         "password": password,
-        "mac": mac,
-        "otp": otp
+        "uuid": mac,
       }.toString());
-      var response = await _dio.post(
-        '$host/oauth-service/oauth/token',
-        options: Options(
-          headers: <String, String>{
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': 'Basic d3Mtc3lzdGVtOkZveGNvbm4xNjghIQ==',
-          },
-        ),
-        data: {
-          "grant_type": grantType,
-          "username": userName,
-          "password": password,
-          "mac": mac,
-          "otp": otp
-        },
-      ).timeout(Duration(seconds: 15));
+      var response = await _dio
+          .post(
+            '$baseUrl/api/user/sign-in',
+            options: Options(
+              headers: <String, String>{
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Basic d3Mtc3lzdGVtOkZveGNvbm4xNjghIQ==',
+              },
+            ),
+            data: FormData.fromMap({
+              "username": userName,
+              "password": password,
+              "uuid": mac,
+            }),
+          )
+          .timeout(Duration(seconds: 15));
       return TokenResp.fromJson(response.data);
     } on DioError catch (dioEx) {
       _catchDioEx(dioEx);
@@ -458,38 +456,38 @@ class Api {
   //     _catchDioEx(dioEx);
   //   }
   // }
-
-  Future<dynamic> getOTPForgotPass(String userName, String grantType) async {
-    Map<String, String> queryParams = {
-      "username": userName,
-      "grantType": grantType,
-    };
-    log(queryParams.toString());
-
-    try {
-      var response = await _dio
-          .get('$host/oauth-service/api/user/forgot-password',
-              queryParameters: queryParams)
-          .timeout(Duration(seconds: 15));
-      return response.data;
-    } on DioError catch (dioEx) {
-      _catchDioEx(dioEx);
-    }
-  }
-
-  Future<dynamic> forgotPass(
-      String userName, String password, String otp) async {
-    try {
-      var response = await _dio
-          .get(
-            '$host/oauth-service/api/user/forgot-password',
-          )
-          .timeout(Duration(seconds: 15));
-      return response.data;
-    } on DioError catch (dioEx) {
-      _catchDioEx(dioEx);
-    }
-  }
+  //
+  // Future<dynamic> getOTPForgotPass(String userName, String grantType) async {
+  //   Map<String, String> queryParams = {
+  //     "username": userName,
+  //     "grantType": grantType,
+  //   };
+  //   log(queryParams.toString());
+  //
+  //   try {
+  //     var response = await _dio
+  //         .get('$host/oauth-service/api/user/forgot-password',
+  //             queryParameters: queryParams)
+  //         .timeout(Duration(seconds: 15));
+  //     return response.data;
+  //   } on DioError catch (dioEx) {
+  //     _catchDioEx(dioEx);
+  //   }
+  // }
+  //
+  // Future<dynamic> forgotPass(
+  //     String userName, String password, String otp) async {
+  //   try {
+  //     var response = await _dio
+  //         .get(
+  //           '$host/oauth-service/api/user/forgot-password',
+  //         )
+  //         .timeout(Duration(seconds: 15));
+  //     return response.data;
+  //   } on DioError catch (dioEx) {
+  //     _catchDioEx(dioEx);
+  //   }
+  // }
 
   ///utils
 

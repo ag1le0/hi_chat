@@ -30,8 +30,8 @@ class LandingController extends GetxController {
 
   initRabbit() async {
     client.settings.authProvider =
-        const AmqPlainAuthenticator('rabbitmq', 'Foxconn168!!');
-    client.settings.host = '10.224.81.142';
+        const AmqPlainAuthenticator('admin', 'Foxconn168!!');
+    client.settings.host = 'http://10.10.1.14';
     client.settings.port = 5672;
 
     Channel channel = await client.channel();

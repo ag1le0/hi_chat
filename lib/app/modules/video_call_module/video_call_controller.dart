@@ -30,7 +30,7 @@ class VideoCallController extends GetxController {
   final _remoteRenderer = RTCVideoRenderer();
   var _inCalling = false.obs;
   Session? _session;
-  String host = '10.10.1.14';
+  String host = '10.224.56.200';
   String? selfId;
 
   List get peers => _peers.value;

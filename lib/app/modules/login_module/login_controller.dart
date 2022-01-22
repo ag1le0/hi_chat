@@ -23,7 +23,7 @@ class LoginController extends GetxController {
         .getToken(
             userName: username,
             password: password,
-            mac: 'udid',
+            mac: 'uuid',
             otp: '',
             grantType: 'password')
         .then((data) {
@@ -57,6 +57,7 @@ class LoginController extends GetxController {
       } else {
         //Utils.showToast('Some thing wrong', Get.context!);
       }
+      log(onError.toString());
     });
   }
 
