@@ -7,6 +7,8 @@ import 'package:gmo_media_picker/media_picker.dart';
 import 'package:pea_chat/app/data/model/user.dart';
 import 'package:pea_chat/app/data/provider/local/session.dart';
 import 'package:pea_chat/app/data/provider/remote/api.dart';
+import 'package:pea_chat/app/modules/home_module/home_controller.dart';
+import 'package:pea_chat/app/routes/app_pages.dart';
 /**
  * GetX Template Generator - fb.com/htngu.99
  * */
@@ -18,6 +20,8 @@ class CreateChatController extends GetxController {
 
   var searchController = TextEditingController(text: '');
   var groupNameCtrl = TextEditingController();
+
+  HomeController _homeController = Get.find();
 
   Rx<File?> groupAvt = Rx(null);
 
@@ -56,13 +60,19 @@ class CreateChatController extends GetxController {
     for (var element in listGroupMembers) {
       data.fields.add(MapEntry('memberIdList', element.id!.toString()));
     }
-    data.files.add(MapEntry(
-        'avatar', await dio.MultipartFile.fromFile(groupAvt.value!.path)));
+    if (groupAvt.value != null) {
+      data.files.add(MapEntry(
+          'avatar', await dio.MultipartFile.fromFile(groupAvt.value!.path)));
+    }
+
     Api.instance
         .createGroup(
-          bearToken: Session.instance.tokenResp!.accessToken,
-          data: data,
-        )
-        .then((value) {});
+      bearToken: Session.instance.tokenResp!.accessToken,
+      data: data,
+    )
+        .then((value) {
+      Get.offNamed(Routes.CHAT + '/${value!.result!.id!}');
+      _homeController.fetchGroupList();
+    });
   }
 }

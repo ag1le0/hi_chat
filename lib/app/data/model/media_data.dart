@@ -10,8 +10,8 @@ class MediaResponse {
   Type? _type;
   @JsonKey(name: 'url')
   String? _url;
-  @JsonKey(name: 'thumbUrl')
-  String? _thumbUrl;
+  // @JsonKey(name: 'thumbUrl')
+  // String? _thumbUrl;
 
   MediaResponse({
     String? udid,
@@ -20,14 +20,14 @@ class MediaResponse {
     String? thumbUrl,
   })  : _udid = udid,
         _type = type,
-        _url = url,
-        _thumbUrl = thumbUrl;
+        _url = url;
+  // _thumbUrl = thumbUrl;
 
-  String? get thumbUrl => _thumbUrl;
+  //String? get thumbUrl => _thumbUrl;
 
-  set thumbUrl(String? value) {
-    _thumbUrl = value;
-  }
+  // set thumbUrl(String? value) {
+  //   _thumbUrl = value;
+  // }
 
   String? get url => _url;
 

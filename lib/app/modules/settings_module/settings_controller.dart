@@ -1,3 +1,6 @@
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:get/get.dart';
 import 'package:pea_chat/app/data/provider/local/session.dart';
 import 'package:pea_chat/app/data/provider/remote/api.dart';
@@ -31,6 +34,23 @@ class SettingsController extends GetxController {
           }).then((value) async {});
       Get.back();
       Get.offAllNamed(Routes.LOGIN);
+    });
+  }
+
+  void uploadAvatar(File image) {
+    Api.instance
+        .uploadAvatar(
+            bearToken: Session.instance.tokenResp!.accessToken, file: image)
+        .then((value) {
+      Api.instance
+          .getLoginInfo(
+        bearToken: Session.instance.tokenResp!.accessToken,
+      )
+          .then((value) {
+        Session.instance.user = value?.result;
+      });
+    }).catchError((onError) {
+      log(onError.toString());
     });
   }
 }

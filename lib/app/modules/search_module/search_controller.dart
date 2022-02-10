@@ -15,7 +15,6 @@ class SearchController extends GetxController {
 
   @override
   void onInit() {
-    tfUserSearchFocusNode.requestFocus();
     tfUserSearchCtrl.addListener(() {
       userSearchList.value = [];
       var query = dio.FormData();
@@ -27,7 +26,16 @@ class SearchController extends GetxController {
         userSearchList.assignAll(value!.result ?? []);
       });
     });
+
     // TODO: implement onInit
     super.onInit();
+  }
+
+  @override
+  void onReady() {
+    // TODO: implement onReady
+    tfUserSearchFocusNode.requestFocus();
+
+    super.onReady();
   }
 }

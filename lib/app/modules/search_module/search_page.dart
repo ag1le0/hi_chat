@@ -1,8 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pea_chat/app/data/provider/local/session.dart';
-import 'package:pea_chat/app/data/provider/remote/api.dart';
+import 'package:pea_chat/app/common/view/avatar.dart';
 import 'package:pea_chat/app/modules/search_module/search_controller.dart';
 import 'package:pea_chat/app/routes/app_pages.dart';
 import 'package:pea_chat/app/utils/extension.dart';
@@ -15,77 +13,63 @@ class SearchPage extends GetView<SearchController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: PreferredSize(
-        preferredSize: AppBar().preferredSize,
-        child: AppBar(
-          title: TextField(
-            focusNode: controller.tfUserSearchFocusNode,
-            controller: controller.tfUserSearchCtrl,
-            decoration: InputDecoration(
-                hintText: 'ID card/Name,...',
-                isDense: true,
-                border: InputBorder.none,
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: 8, horizontal: 8)),
-          ),
-          leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              color: HexColor.fromHex('5B5B7E'),
-            ),
-            onPressed: () {
-              Get.back();
-            },
-          ),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-        ),
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-                topRight: Radius.circular(32), topLeft: Radius.circular(32))),
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 24),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            //search bar
-            //CupertinoSearchTextField(),
-            Expanded(
-              child: Obx(() => ListView(
-                    children: controller.userSearchList.map((event) {
-                      return GestureDetector(
-                        onTap: () {
-                          Get.toNamed(Routes.USER + '/${event.id}');
-                        },
-                        child: ListTile(
-                          title: Text(event.username! + ' - ' + event.name!),
-                          leading: SizedBox(
-                            width: 50,
-                            height: 50,
-                            child: CachedNetworkImage(
-                              fit: BoxFit.cover,
-                              imageUrl: Api.host +
-                                  ((event.avatar != null)
-                                      ? event.avatar!.thumbUrl!
-                                      : '/peachat/assets/dist/img/default-user-avatar.jpg'),
-                              httpHeaders: {
-                                'Authorization': 'Bearer ' +
-                                    Session.instance.tokenResp!.accessToken!
-                              },
-                              errorWidget: (ctx, url, error) =>
-                                  CachedNetworkImage(
-                                imageUrl:
-                                    'https://10.224.81.70:6443/peachat/assets/dist/img/default-user-avatar.jpg',
-                                errorWidget: (_, __, ___) => SizedBox(),
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  )),
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 5),
+              height: 100,
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.arrow_back,
+                        color: HexColor.fromHex('5B5B7E'),
+                      ),
+                      onPressed: () {
+                        Get.back();
+                      },
+                    ),
+                    Expanded(
+                      child: TextField(
+                        focusNode: controller.tfUserSearchFocusNode,
+                        controller: controller.tfUserSearchCtrl,
+                        decoration: InputDecoration(
+                            hintText: 'Username/name,...',
+                            isDense: true,
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 8)),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
+            Expanded(
+                child: CustomScrollView(
+              slivers: [
+                Obx(() => SliverList(
+                      delegate: SliverChildListDelegate(
+                          controller.userSearchList.map((event) {
+                        return ListTile(
+                          onTap: () {
+                            Get.toNamed(Routes.USER + '/${event.id}');
+                          },
+                          title: Text(event.nickName!),
+                          subtitle: Text(event.username!),
+                          leading: Avatar(
+                            media: event.avatar,
+                            size: 50,
+                          ),
+                        );
+                      }).toList()),
+                    )),
+              ],
+            ))
           ],
         ),
       ),

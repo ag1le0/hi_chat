@@ -21,6 +21,7 @@ GroupResponse _$GroupResponseFromJson(Map<String, dynamic> json) =>
               json['latestMessage'] as Map<String, dynamic>),
       messageNumber: json['messageNumber'] as int?,
       followed: json['followed'] as bool?,
+      type: enumFromString(GroupType.values, json['type']),
     );
 
 Map<String, dynamic> _$GroupResponseToJson(GroupResponse instance) =>
@@ -33,4 +34,5 @@ Map<String, dynamic> _$GroupResponseToJson(GroupResponse instance) =>
       'latestMessage': instance.latestMessage?.toJson(),
       'messageNumber': instance.messageNumber,
       'followed': instance.followed,
+      'type': instance.type,
     };

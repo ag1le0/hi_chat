@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pea_chat/app/data/model/media_data.dart';
+import 'package:pea_chat/app/utils/utils.dart';
 
 import 'message_response.dart';
 
@@ -31,23 +32,28 @@ class GroupResponse {
   @JsonKey(name: 'followed')
   bool? _followed;
 
-  GroupResponse({
-    int? id,
-    String? name,
-    String? uuid,
-    MediaResponse? avatar,
-    int? unreadMessageNumber,
-    MessageResponse? latestMessage,
-    int? messageNumber,
-    bool? followed,
-  })  : _id = id,
+  @JsonKey(name: 'type')
+  GroupType? _type;
+
+  GroupResponse(
+      {int? id,
+      String? name,
+      String? uuid,
+      MediaResponse? avatar,
+      int? unreadMessageNumber,
+      MessageResponse? latestMessage,
+      int? messageNumber,
+      bool? followed,
+      GroupType? type})
+      : _id = id,
         _name = name,
         _uuid = uuid,
         _avatar = avatar,
         _unreadMessageNumber = unreadMessageNumber,
         _latestMessage = latestMessage,
         _messageNumber = messageNumber,
-        _followed = followed;
+        _followed = followed,
+        _type = type;
 
   factory GroupResponse.fromJson(Map<String, dynamic> json) =>
       _$GroupResponseFromJson(json);
@@ -101,4 +107,12 @@ class GroupResponse {
   set followed(bool? value) {
     _followed = value;
   }
+
+  GroupType? get type => _type;
+
+  set type(GroupType? value) {
+    _type = value;
+  }
 }
+
+enum GroupType { FRIEND, NORMAL }

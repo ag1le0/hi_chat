@@ -70,7 +70,6 @@ class LoginController extends GetxController {
       // Utils.saveObject(USER_INFO, userPref);
       // Utils.showToast("Login Success", Get.context!);
       //Get.offAllNamed(Routes.LANDING, arguments: bearToken);
-      Get.back();
       Get.offAllNamed(Routes.LANDING);
     }).catchError((onError) {
       if (onError is CustomException) {

@@ -4,12 +4,11 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
-import 'package:get/get.dart' as Get;
+import 'package:pea_chat/app/data/provider/local/session.dart' as S;
 
-import '../utils/device_info.dart';
 import '../utils/turn.dart';
-import '../utils/websocket.dart';
-import 'random_string.dart';
+import 'device_info.dart';
+import 'websocket.dart';
 
 enum SignalingState {
   ConnectionOpen,
@@ -39,7 +38,7 @@ class Signaling {
 
   JsonEncoder _encoder = JsonEncoder();
   JsonDecoder _decoder = JsonDecoder();
-  String _selfId = randomNumeric(6);
+  String _selfId = S.Session.instance.user!.username!;
   SimpleWebSocket? _socket;
   var _host;
   var _port = 8086;
@@ -129,17 +128,17 @@ class Signaling {
     var data = mapData['data'];
 
     switch (mapData['type']) {
-      case 'peers':
-        {
-          List<dynamic> peers = data;
-          if (onPeersUpdate != null) {
-            Map<String, dynamic> event = Map<String, dynamic>();
-            event['self'] = _selfId;
-            event['peers'] = peers;
-            onPeersUpdate?.call(event);
-          }
-        }
-        break;
+      // case 'peers':
+      //   {
+      //     List<dynamic> peers = data;
+      //     if (onPeersUpdate != null) {
+      //       Map<String, dynamic> event = Map<String, dynamic>();
+      //       event['self'] = _selfId;
+      //       event['peers'] = peers;
+      //       onPeersUpdate?.call(event);
+      //     }
+      //   }
+      //   break;
       case 'offer':
         {
           var peerId = data['from'];
@@ -156,15 +155,8 @@ class Signaling {
           _sessions[sessionId] = newSession;
           onCallStateChange?.call(newSession, CallState.CallStateRinging);
 
-          // var peerId = data['from'];
-          // var description = data['description'];
-          // var sessionId = data['session_id'];
-          // var session = _sessions[sessionId];
-          // var newSession = await _createSession(
-          //   session,
-          //   peerId: peerId,
-          //   sessionId: sessionId,
-          // );
+          //var description = data['description'];
+
           // _sessions[sessionId] = newSession;
           // await newSession.pc?.setRemoteDescription(
           //     RTCSessionDescription(description['sdp'], description['type']));
@@ -242,23 +234,23 @@ class Signaling {
   Future<void> acceptCall() async {
     var tempSession = _sessions[sessionId];
 
+    log(desc.toString());
     await tempSession?.pc?.setRemoteDescription(
         RTCSessionDescription(desc['sdp'], desc['type']));
     await _createAnswer(tempSession!);
-    if (tempSession.remoteCandidates.length > 0) {
+    if (tempSession.remoteCandidates.isNotEmpty) {
       tempSession.remoteCandidates.forEach((candidate) async {
         await tempSession.pc?.addCandidate(candidate);
       });
       tempSession.remoteCandidates.clear();
     }
-    Get.Get.back();
     onCallStateChange?.call(tempSession, CallState.CallStateConnected);
   }
 
   Future<void> connect() async {
-    var schem = 'http';
+    var schem = 'https';
     if (kIsWeb) {
-      schem = 'ws';
+      schem = 'wss';
     }
     var url = '$schem://$_host:$_port/ws';
     _socket = SimpleWebSocket(url);
@@ -293,7 +285,7 @@ class Signaling {
       log('onOpen');
       onSignalingStateChange?.call(SignalingState.ConnectionOpen);
       _send('new', {
-        'name': DeviceInfo.label,
+        'name': S.Session.instance.user!.name,
         'id': _selfId,
         'user_agent': DeviceInfo.userAgent
       });
@@ -379,7 +371,7 @@ class Signaling {
                 'to': peerId,
                 'from': _selfId,
                 'candidate': {
-                  'sdpMLineIndex': candidate.sdpMlineIndex,
+                  'sdpMLineIndex': candidate.sdpMLineIndex,
                   'sdpMid': candidate.sdpMid,
                   'candidate': candidate.candidate,
                 },
@@ -387,7 +379,9 @@ class Signaling {
               }));
     };
 
-    pc.onIceConnectionState = (state) {};
+    pc.onIceConnectionState = (state) {
+      log('LOG: ' + state.name);
+    };
 
     pc.onRemoveStream = (stream) {
       onRemoveRemoteStream?.call(newSession, stream);

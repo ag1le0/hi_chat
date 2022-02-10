@@ -1,6 +1,11 @@
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:get/get.dart';
-import 'package:pea_chat/app/modules/video_call_module/utils/signaling.dart';
+import 'package:pea_chat/app/data/provider/remote/api.dart';
+import 'package:pea_chat/app/modules/landing_module/sub_module/video_call_module/utils/signaling.dart';
+import 'package:pea_chat/app/modules/landing_module/sub_module/video_call_module/widgets/in_call.dart';
+import 'package:pea_chat/app/modules/landing_module/sub_module/video_call_module/widgets/offer_call.dart';
+import 'package:pea_chat/app/modules/landing_module/sub_module/video_call_module/widgets/ring_ring.dart';
+import 'package:pea_chat/app/routes/app_pages.dart';
 import 'package:wakelock/wakelock.dart';
 /**
  * GetX Template Generator - fb.com/htngu.99
@@ -9,6 +14,9 @@ import 'package:wakelock/wakelock.dart';
 class VideoCallController extends GetxController {
   Signaling? _signaling;
   RxList<dynamic> _peers = [].obs;
+
+  var remoteVideoReady = false.obs;
+  var localVideoReady = false.obs;
 
   final _micOff = false.obs;
 
@@ -28,9 +36,7 @@ class VideoCallController extends GetxController {
 
   final _localRenderer = RTCVideoRenderer();
   final _remoteRenderer = RTCVideoRenderer();
-  var _inCalling = false.obs;
   Session? _session;
-  String host = '10.224.56.200';
   String? selfId;
 
   List get peers => _peers.value;
@@ -45,29 +51,28 @@ class VideoCallController extends GetxController {
 
   Signaling? get signaling => _signaling;
 
-  bool get inCalling => _inCalling.value;
-
-  set inCalling(value) {
-    _inCalling.value = value;
-  }
-
   Session? get session => _session;
 
   @override
   void onInit() {
-    _initRenderers();
-    _connect();
     // TODO: implement onInit
     super.onInit();
+  }
+
+  init() async {
+    _initRenderers();
+    _connect();
   }
 
   _initRenderers() async {
     await localRenderer.initialize();
     await remoteRenderer.initialize();
+    remoteVideoReady.value = false;
+    localVideoReady.value = false;
   }
 
   void _connect() async {
-    _signaling ??= Signaling(host)..connect();
+    _signaling ??= Signaling(Api.hostClear)..connect();
     _signaling?.onSignalingStateChange = (SignalingState state) {
       switch (state) {
         case SignalingState.ConnectionClosed:
@@ -78,27 +83,33 @@ class VideoCallController extends GetxController {
     };
 
     _signaling?.onCallStateChange = (Session session, CallState state) {
-      inCalling = false;
       Wakelock.disable();
       callState = state;
       micOff = _signaling!.micState();
       switch (state) {
         case CallState.CallStateNew:
           _session = session;
+          Get.to(() => OfferCall());
           break;
         case CallState.CallStateBye:
           localRenderer.srcObject = null;
           remoteRenderer.srcObject = null;
+          remoteVideoReady.value = false;
+          localVideoReady.value = false;
           _session = null;
+          Get.until((route) =>
+              route.settings.name == Routes.LANDING ||
+              route.settings.name == Routes.CHAT);
           break;
         case CallState.CallStateInvite:
         case CallState.CallStateConnected:
           _session = session;
-          inCalling = true;
+          Get.to(() => InCall());
           Wakelock.enable();
           break;
         case CallState.CallStateRinging:
           _session = session;
+          Get.to(() => RingRing());
           break;
       }
     };
@@ -110,14 +121,17 @@ class VideoCallController extends GetxController {
 
     _signaling?.onLocalStream = ((stream) {
       localRenderer.srcObject = stream;
+      localVideoReady.value = true;
     });
 
     _signaling?.onAddRemoteStream = ((_, stream) {
       remoteRenderer.srcObject = stream;
+      remoteVideoReady.value = true;
     });
 
     _signaling?.onRemoveRemoteStream = ((_, stream) {
       remoteRenderer.srcObject = null;
+      remoteVideoReady.value = false;
     });
   }
 

@@ -56,3 +56,10 @@ String splitNameLetter(String name) {
   var split = name.trim().split(' ');
   return split.last.split('').first;
 }
+
+T enumFromString<T>(List<T> values, String value) {
+  return values.firstWhere((v) => v.toString().split('.')[1] == value,
+      orElse: () {
+    throw Exception('ENUM NOT FOUND');
+  });
+}

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../res.dart';
+import '../../../res.dart';
 
 class InitialBackgroundView extends StatelessWidget {
   @override

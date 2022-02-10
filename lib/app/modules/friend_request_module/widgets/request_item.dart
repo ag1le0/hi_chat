@@ -1,9 +1,8 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pea_chat/app/common/view/avatar.dart';
 import 'package:pea_chat/app/data/model/friend_request_response.dart';
-import 'package:pea_chat/app/data/provider/local/session.dart';
 import 'package:pea_chat/app/modules/friend_request_module/friend_request_controller.dart';
 import 'package:pea_chat/app/utils/extension.dart';
 
@@ -38,25 +37,8 @@ class RequestItem extends GetWidget<FriendRequestController> {
                           // border: Border.all(color: Colors.white, width: 2.5),
                           // borderRadius: BorderRadius.circular(30),
                           ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(50),
-                        clipBehavior: Clip.antiAlias,
-                        child: CachedNetworkImage(
-                          fit: BoxFit.cover,
-                          imageUrl: 'https://10.224.81.70:6443' +
-                              ((value.value.user!.avatar != null)
-                                  ? value.value.user!.avatar!.thumbUrl!
-                                  : '/peachat/assets/dist/img/default-user-avatar.jpg'),
-                          httpHeaders: {
-                            'Authorization': 'Bearer ' +
-                                Session.instance.tokenResp!.accessToken!,
-                          },
-                          errorWidget: (ctx, url, error) => CachedNetworkImage(
-                            imageUrl:
-                                'https://10.224.81.70:6443/peachat/assets/dist/img/default-user-avatar.jpg',
-                            errorWidget: (_, __, ___) => SizedBox(),
-                          ),
-                        ),
+                      child: Avatar(
+                        media: value.value.user!.avatar,
                       ),
                     )),
                 SizedBox(

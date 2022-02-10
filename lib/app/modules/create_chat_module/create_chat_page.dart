@@ -1,9 +1,8 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:gmo_media_picker/media_picker.dart';
-import 'package:pea_chat/app/data/provider/local/session.dart';
+import 'package:pea_chat/app/common/view/avatar.dart';
 import 'package:pea_chat/app/modules/create_chat_module/create_chat_controller.dart';
 import 'package:pea_chat/app/utils/extension.dart';
 /**
@@ -58,33 +57,39 @@ class CreateChatPage extends GetView<CreateChatController> {
         child: Column(
           children: [
             SizedBox(
-              height: 50,
               width: double.infinity,
               child: Row(
                 children: [
-                  Container(
-                    height: 50,
-                    width: 50,
-                    child: GestureDetector(
-                      onTap: () {
-                        GmoMediaPicker.picker(
-                          context,
-                          isMulti: false,
-                          type: RequestType.image,
-                          isReview: true,
-                          singleCallback: controller.fileSelected,
-                        );
-                      },
-                      child: Obx(() => controller.groupAvt.value == null
-                          ? Icon(
-                              FontAwesomeIcons.camera,
-                              color: Colors.grey,
-                            )
-                          : Image.file(controller.groupAvt.value!)),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      height: 50,
+                      width: 50,
+                      clipBehavior: Clip.antiAlias,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: HexColor.fromHex('EBF2FA')),
+                      child: GestureDetector(
+                        onTap: () {
+                          GmoMediaPicker.picker(
+                            context,
+                            isMulti: false,
+                            type: RequestType.image,
+                            isReview: true,
+                            singleCallback: controller.fileSelected,
+                          );
+                        },
+                        child: Obx(() => controller.groupAvt.value == null
+                            ? Icon(
+                                FontAwesomeIcons.camera,
+                                color: Colors.grey,
+                              )
+                            : Image.file(
+                                controller.groupAvt.value!,
+                                fit: BoxFit.cover,
+                              )),
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    width: 20,
                   ),
                   Expanded(
                       child: TextField(
@@ -96,43 +101,6 @@ class CreateChatPage extends GetView<CreateChatController> {
                   ))
                 ],
               ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 15),
-              height: 35,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                  color: Colors.grey.withOpacity(.15),
-                  borderRadius: BorderRadius.circular(17.5)),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.search,
-                    color: Colors.grey,
-                    size: 24,
-                  ),
-                  SizedBox(
-                    width: 15,
-                  ),
-                  Expanded(
-                    child: TextField(
-                      controller: controller.searchController,
-                      decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'Search',
-                          isDense: true,
-                          contentPadding: EdgeInsets.symmetric(vertical: 8)),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 15,
             ),
             Obx(
               () => controller.listGroupMembers.isNotEmpty
@@ -175,32 +143,8 @@ class CreateChatPage extends GetView<CreateChatController> {
                                                             BorderRadius
                                                                 .circular(25),
                                                       ),
-                                                      child: CachedNetworkImage(
-                                                        fit: BoxFit.fill,
-                                                        imageUrl: 'https://10.224.81.70:6443' +
-                                                            ((element.avatar !=
-                                                                    null)
-                                                                ? element
-                                                                    .avatar!
-                                                                    .thumbUrl!
-                                                                : '/peachat/assets/dist/img/default-user-avatar.jpg'),
-                                                        httpHeaders: {
-                                                          'Authorization':
-                                                              'Bearer' +
-                                                                  Session
-                                                                      .instance
-                                                                      .tokenResp!
-                                                                      .accessToken!
-                                                        },
-                                                        errorWidget: (ctx, url,
-                                                                error) =>
-                                                            CachedNetworkImage(
-                                                          imageUrl:
-                                                              'https://10.224.81.70:6443/peachat/assets/dist/img/default-user-avatar.jpg',
-                                                          errorWidget:
-                                                              (_, __, ___) =>
-                                                                  SizedBox(),
-                                                        ),
+                                                      child: Avatar(
+                                                        media: element.avatar,
                                                       ),
                                                     ),
                                                   ),
@@ -271,6 +215,20 @@ class CreateChatPage extends GetView<CreateChatController> {
                               style: TextStyle(fontWeight: FontWeight.bold),
                             )),
                       ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextField(
+                          style: TextStyle(color: Colors.black),
+                          controller: controller.searchController,
+                          decoration: InputDecoration(
+                              border: InputBorder.none,
+                              fillColor: HexColor.fromHex('EBF2FA'),
+                              filled: true,
+                              prefixIcon: Icon(Icons.search),
+                              hintText: 'Name/username'),
+                          maxLines: 1,
+                        ),
+                      ),
                       Expanded(
                         child: ListView(
                             children: controller.listContactsFilter
@@ -293,30 +251,8 @@ class CreateChatPage extends GetView<CreateChatController> {
                                                 borderRadius:
                                                     BorderRadius.circular(50),
                                                 clipBehavior: Clip.antiAlias,
-                                                child: CachedNetworkImage(
-                                                  fit: BoxFit.cover,
-                                                  imageUrl:
-                                                      'https://10.224.81.70:6443' +
-                                                          ((element.avatar !=
-                                                                  null)
-                                                              ? element.avatar!
-                                                                  .thumbUrl!
-                                                              : '/peachat/assets/dist/img/default-user-avatar.jpg'),
-                                                  httpHeaders: {
-                                                    'Authorization': 'Bearer' +
-                                                        Session
-                                                            .instance
-                                                            .tokenResp!
-                                                            .accessToken!
-                                                  },
-                                                  errorWidget:
-                                                      (ctx, url, error) =>
-                                                          CachedNetworkImage(
-                                                    imageUrl:
-                                                        'https://10.224.81.70:6443/peachat/assets/dist/img/default-user-avatar.jpg',
-                                                    errorWidget: (_, __, ___) =>
-                                                        SizedBox(),
-                                                  ),
+                                                child: Avatar(
+                                                  media: element.avatar,
                                                 ),
                                               ),
                                             ),

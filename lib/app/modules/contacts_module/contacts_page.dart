@@ -1,13 +1,12 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:pea_chat/app/data/provider/local/session.dart';
-import 'package:pea_chat/app/data/provider/remote/api.dart';
+import 'package:pea_chat/app/common/view/search_widget.dart';
 import 'package:pea_chat/app/modules/contacts_module/contacts_controller.dart';
-import 'package:pea_chat/app/modules/home_module/widgets/action_icon.dart';
+import 'package:pea_chat/app/modules/contacts_module/widgets/contact_item.dart';
 import 'package:pea_chat/app/routes/app_pages.dart';
+import 'package:pea_chat/app/utils/extension.dart';
 /**
  * GetX Template Generator - fb.com/htngu.99
  * */
@@ -19,170 +18,124 @@ class ContactsPage extends GetView<ContactsController> {
       child: Scaffold(
           backgroundColor: Colors.white,
           body: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.symmetric(horizontal: 24),
             child: Column(
               children: [
                 Container(
                   padding: EdgeInsets.symmetric(vertical: 5),
                   height: 70,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
+                  child: Stack(
                     children: [
-                      Text(
-                        'Friends',
-                        style: TextStyle(
-                            fontSize: 32, fontWeight: FontWeight.w700),
+                      Positioned(
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              'Contacts',
+                              style: TextStyle(
+                                  color: HexColor.fromHex('0F1828'),
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Spacer(),
+                            // IconButton(
+                            //   onPressed: () {},
+                            //   icon: Icon(FontAwesomeIcons.qrcode),
+                            //   color: HexColor.fromHex('0F1828'),
+                            //   iconSize: 17,
+                            // ),
+                            GestureDetector(
+                              onTap: () {
+                                Get.toNamed(Routes.ADD_FRIEND);
+                              },
+                              child: Icon(
+                                Icons.group_add_rounded,
+                                color: HexColor.fromHex('0F1828'),
+                                size: 24,
+                              ),
+                            )
+                          ],
+                        ),
                       ),
-                      Spacer(),
-                      GestureDetector(
-                        child: ActionIcon(icon: FontAwesomeIcons.search),
-                        onTap: () {
-                          Get.toNamed(Routes.SEARCH);
-                        },
-                      ),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      GestureDetector(
-                          onTap: () {
-                            Get.toNamed(Routes.ADD_FRIEND);
-                          },
-                          child: ActionIcon(icon: FontAwesomeIcons.userPlus)),
                     ],
                   ),
                 ),
                 Expanded(
-                    child: Column(
-                  children: [
-                    Expanded(
-                      child: ListView(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              Get.toNamed(Routes.FRIEND_REQUEST);
-                            },
-                            child: ListTile(
-                              title: Row(
-                                children: [
-                                  Text('Friend requests'),
-                                  Spacer(),
-                                  Obx(() => controller
-                                              .addFriendRequestNumber.value !=
-                                          0
-                                      ? Container(
-                                          height: 20,
-                                          width: 20,
-                                          decoration: BoxDecoration(
-                                              color: Colors.red,
-                                              borderRadius:
-                                                  BorderRadius.circular(10)),
-                                          child: Center(
-                                            child: Text(
-                                              controller
-                                                  .addFriendRequestNumber.value
-                                                  .toString(),
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 12),
-                                            ),
-                                          ),
-                                        )
-                                      : SizedBox())
-                                ],
-                              ),
-                              leading: Icon(FontAwesomeIcons.userFriends),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 15,
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 10, vertical: 15),
-                                  child: Obx(() => Text(
-                                        'Friend (${controller.listFriend.length})',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ))),
-                              Obx(() => ListView(
-                                  shrinkWrap: true,
-                                  physics: NeverScrollableScrollPhysics(),
-                                  children: controller.listFriend
-                                      .map((element) => Column(
-                                            children: [
-                                              GestureDetector(
-                                                onTap: () {
-                                                  Api.instance
-                                                      .createFriendChatRoom(
-                                                          bearToken: Session
-                                                              .instance
-                                                              .tokenResp!
-                                                              .accessToken,
-                                                          idFriend: element.id)
-                                                      .then((value) {
-                                                    Get.toNamed(Routes.CHAT +
-                                                        '/${value!.result!.id!}');
-                                                  });
-                                                },
-                                                child: ListTile(
-                                                  leading: SizedBox(
-                                                    height: 40,
-                                                    width: 40,
-                                                    child: ClipRRect(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              50),
-                                                      clipBehavior:
-                                                          Clip.antiAlias,
-                                                      child: CachedNetworkImage(
-                                                        fit: BoxFit.cover,
-                                                        imageUrl: Api.host +
-                                                            ((element.avatar !=
-                                                                    null)
-                                                                ? element
-                                                                    .avatar!
-                                                                    .thumbUrl!
-                                                                : '/peachat/assets/dist/img/default-user-avatar.jpg'),
-                                                        httpHeaders: {
-                                                          'Authorization':
-                                                              'Bearer' +
-                                                                  Session
-                                                                      .instance
-                                                                      .tokenResp!
-                                                                      .accessToken!
-                                                        },
-                                                        errorWidget: (ctx, url,
-                                                                error) =>
-                                                            CachedNetworkImage(
-                                                          imageUrl:
-                                                              '${Api.host}/peachat/assets/dist/img/default-user-avatar.jpg',
-                                                          errorWidget:
-                                                              (_, __, ___) =>
-                                                                  SizedBox(),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  title: Text(element.name!),
-                                                ),
-                                              ),
-                                              Divider(
-                                                thickness: .7,
-                                              )
-                                            ],
-                                          ))
-                                      .toList())),
-                            ],
-                          )
-                        ],
+                    child: CustomScrollView(
+                  slivers: [
+                    SliverToBoxAdapter(
+                      child: SizedBox(
+                        height: 15,
                       ),
                     ),
+                    SliverToBoxAdapter(
+                      child: SearchWidget(),
+                    ),
+                    SliverToBoxAdapter(
+                      child: SizedBox(
+                        height: 10,
+                      ),
+                    ),
+                    if (controller.addFriendRequestNumber.value != 0)
+                      SliverToBoxAdapter(
+                        child: GestureDetector(
+                          onTap: () {
+                            Get.toNamed(Routes.FRIEND_REQUEST);
+                          },
+                          child: ListTile(
+                            title: Row(
+                              children: [
+                                Text('Friend requests'),
+                                Spacer(),
+                                Obx(() => Container(
+                                      height: 20,
+                                      width: 20,
+                                      decoration: BoxDecoration(
+                                          color: Colors.red,
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      child: Center(
+                                        child: Text(
+                                          controller
+                                              .addFriendRequestNumber.value
+                                              .toString(),
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 12),
+                                        ),
+                                      ),
+                                    ))
+                              ],
+                            ),
+                            leading: Icon(FontAwesomeIcons.userFriends),
+                          ),
+                        ),
+                      ),
+                    SliverToBoxAdapter(
+                      child: Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 15),
+                          child: Obx(() => Text(
+                                '${controller.listFriend.length} Contatcts Available',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 15),
+                              ))),
+                    ),
+                    Obx(
+                      () => SliverList(
+                          delegate: SliverChildListDelegate(
+                        controller.listFriend
+                            .map((element) => ContactItem(
+                                  value: Rx(element),
+                                ))
+                            .toList(),
+                      )),
+                    ),
                   ],
-                ))
+                )),
               ],
             ),
           )),

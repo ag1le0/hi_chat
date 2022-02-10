@@ -7,7 +7,10 @@ import 'package:flutter_keyboard_size/flutter_keyboard_size.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:gmo_media_picker/media_picker.dart';
+import 'package:pea_chat/app/data/model/group_response.dart';
 import 'package:pea_chat/app/data/model/message_response.dart';
+import 'package:pea_chat/app/data/model/user.dart';
+import 'package:pea_chat/app/data/provider/local/session.dart';
 import 'package:pea_chat/app/modules/chat_module/chat_controller.dart';
 import 'package:pea_chat/app/modules/chat_module/widgets/chat_item_view.dart';
 import 'package:pea_chat/app/utils/extension.dart';
@@ -49,36 +52,41 @@ class ChatPage extends GetView<ChatController> {
               icon: Icon(Icons.chevron_left),
             ),
             actions: [
+              Obx(() => (controller.currentGroup.value.type == GroupType.FRIEND)
+                  ? IconButton(
+                      onPressed: () {
+                        var peer = User();
+                        for (var element in controller.listMember) {
+                          if (element.username !=
+                              Session.instance.user!.username) {
+                            peer = element;
+                          }
+                        }
+                        controller.callController.invitePeer(peer.username!);
+                      },
+                      icon: Icon(
+                        Icons.videocam_outlined,
+                        size: 24,
+                      ),
+                    )
+                  : SizedBox()),
               IconButton(
                 onPressed: () {},
                 icon: Icon(
-                  FontAwesomeIcons.video,
-                  color: Colors.blue.withOpacity(.8),
-                  size: 18,
-                ),
-              ),
-              IconButton(
-                onPressed: () {},
-                icon: Icon(
-                  FontAwesomeIcons.phoneAlt,
-                  size: 18,
-                  color: Colors.blue.withOpacity(.8),
-                ),
-              ),
-              IconButton(
-                onPressed: () {},
-                icon: Icon(
-                  FontAwesomeIcons.infoCircle,
-                  color: Colors.blue.withOpacity(.8),
-                  size: 18,
+                  Icons.adaptive.more,
+                  size: 24,
                 ),
               ),
             ],
             backgroundColor: Colors.white,
-            title: Obx(() => Text(
-                  controller.currentGroup.value.name ?? '',
-                  style: TextStyle(fontSize: 15),
-                )),
+            title: SizedBox(
+              width: Get.width / 3 * 2,
+              child: Obx(() => Text(
+                    controller.currentGroup.value.name ?? '',
+                    style: TextStyle(
+                        fontSize: 20, overflow: TextOverflow.ellipsis),
+                  )),
+            ),
           ),
           body: Column(
             children: [
@@ -216,11 +224,15 @@ class BottomSendNavigation extends StatelessWidget {
                         height: 35,
                         child: Row(
                           children: [
-                            Container(
-                              height: 24,
-                              width: 45,
-                              child: Center(
-                                child: GestureDetector(
+                            PopupMenuButton(
+                              icon: Icon(
+                                Icons.add,
+                                color: HexColor.fromHex('ADB5BD'),
+                              ),
+                              iconSize: 24,
+                              itemBuilder: (context) => [
+                                PopupMenuItem(
+                                    child: GestureDetector(
                                   onTap: () {
                                     Get.to(() => CameraCamera(
                                           onFile: (image) async {
@@ -231,19 +243,22 @@ class BottomSendNavigation extends StatelessWidget {
                                           },
                                         ));
                                   },
-                                  child: Icon(
-                                    Icons.camera_alt,
-                                    color: HexColor.fromHex('#0AE4B0'),
-                                    size: 24,
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.add_a_photo_outlined,
+                                        color: HexColor.fromHex('#0AE4B0'),
+                                        size: 24,
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Text('Camera'),
+                                    ],
                                   ),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              height: 24,
-                              width: 45,
-                              child: Center(
-                                child: GestureDetector(
+                                )),
+                                PopupMenuItem(
+                                    child: GestureDetector(
                                   onTap: () {
                                     GmoMediaPicker.picker(
                                       context,
@@ -259,25 +274,22 @@ class BottomSendNavigation extends StatelessWidget {
                                       },
                                     );
                                   },
-                                  child: Icon(
-                                    Icons.image,
-                                    color: HexColor.fromHex('#0AE4B0'),
-                                    size: 24,
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.broken_image_outlined,
+                                        color: HexColor.fromHex('#0AE4B0'),
+                                        size: 24,
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Text('Library'),
+                                    ],
                                   ),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              height: 24,
-                              width: 45,
-                              child: Center(
-                                child: Icon(
-                                  Icons.keyboard_voice,
-                                  color: HexColor.fromHex('#0AE4B0'),
-                                  size: 24,
-                                ),
-                              ),
-                            ),
+                                ))
+                              ],
+                            )
                           ],
                         ),
                       ),
@@ -288,7 +300,7 @@ class BottomSendNavigation extends StatelessWidget {
                     width: double.infinity,
                     decoration: BoxDecoration(
                         color: HexColor.fromHex('F7F7FC'),
-                        borderRadius: BorderRadius.circular(25)),
+                        borderRadius: BorderRadius.circular(4)),
                     child: Row(
                       children: [
                         Expanded(

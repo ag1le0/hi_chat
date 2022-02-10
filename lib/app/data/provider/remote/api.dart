@@ -14,8 +14,9 @@ import 'package:pea_chat/app/data/model/user.dart';
 import 'package:pea_chat/app/data/model/user_channel.dart';
 
 class Api {
-  static const String baseUrl = 'http://10.10.1.14:8988/peachat';
-  static const String host = "http://10.10.1.14:8988";
+  static const String baseUrl = '$host/peachat';
+  static const String host = "http://$hostClear:8988";
+  static const String hostClear = "192.168.162.17";
   final _dio = Dio();
 
   Api._privateConstructor();
@@ -164,6 +165,25 @@ class Api {
     }
   }
 
+  Future<ListResponse<User>?> groupMember(
+      {bearToken, required int groupId}) async {
+    try {
+      var res = await _dio.get('$baseUrl/api/group/member/list',
+          options: Options(
+            headers: {
+              'Authorization': 'Bearer $bearToken',
+            },
+          ),
+          queryParameters: {
+            'groupId': groupId
+          }).timeout(const Duration(seconds: 20));
+      return ListResponse.fromJson(
+          res.data, (data) => User.fromJson(data as Map<String, dynamic>));
+    } on DioError catch (dioEx) {
+      _catchDioEx(dioEx);
+    }
+  }
+
   Future<ListResponse<User>?> searchUser({bearToken, query}) async {
     try {
       var res = await _dio
@@ -275,6 +295,7 @@ class Api {
               "username": userName,
               "password": password,
               "uuid": mac,
+              "grant_type": grantType,
             }),
           )
           .timeout(Duration(seconds: 15));
@@ -316,6 +337,32 @@ class Api {
               },
             ),
           )
+          .timeout(Duration(seconds: 15));
+      log(response.data.toString());
+      return CommonResponse.fromJson(response.data,
+          (result) => User.fromJson(result as Map<String, dynamic>));
+    } on DioError catch (dioEx) {
+      _catchDioEx(dioEx);
+    }
+  }
+
+  Future<CommonResponse<dynamic>?> uploadAvatar({bearToken, file}) async {
+    var formData = FormData();
+
+    formData.files.add(MapEntry(
+        'avatar',
+        await MultipartFile.fromFile(
+          file.path,
+        )));
+    try {
+      var response = await _dio
+          .post('$baseUrl/api/user/update',
+              options: Options(
+                headers: {
+                  'Authorization': 'Bearer $bearToken',
+                },
+              ),
+              data: formData)
           .timeout(Duration(seconds: 15));
       log(response.data.toString());
       return CommonResponse.fromJson(response.data,

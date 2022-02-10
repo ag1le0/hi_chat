@@ -1,5 +1,5 @@
-import '../../app/modules/video_call_module/video_call_page.dart';
-import '../../app/modules/video_call_module/video_call_bindings.dart';
+import '../../app/modules/register_module/register_page.dart';
+import '../../app/modules/register_module/register_bindings.dart';
 import 'package:get/get.dart';
 import 'package:pea_chat/app/modules/chat_module/chat_bindings.dart';
 import 'package:pea_chat/app/modules/chat_module/chat_page.dart';
@@ -109,9 +109,9 @@ abstract class AppPages {
       binding: FriendRequestBinding(),
     ),
     GetPage(
-      name: Routes.VIDEO_CALL,
-      page: () => VideoCallPage(),
-      binding: VideoCallBinding(),
+      name: Routes.REGISTER,
+      page: () => RegisterPage(),
+      binding: RegisterBinding(),
     ),
   ];
 }

@@ -52,7 +52,7 @@ dependencies:
   flutter_local_notifications: ^9.1.5
   gmo_media_picker: ^0.0.4
   camera_camera_2: ^2.0.1-dev0.2
-  flutter_webrtc: ^0.8.1
+  flutter_webrtc: ^0.8.0
   wakelock: ^0.6.0+1
 
 dev_dependencies:
@@ -83,11 +83,16 @@ flutter:
     - assets/ab.png
     - assets/avt.png
     - assets/bg.png
+    - assets/default-group-avatar.png
+    - assets/default-user-avatar.jpg
+    - assets/home_icon.png
     - assets/icon-bottom-right.png
     - assets/icon-google.png
     - assets/icon-top-right.png
     - assets/icon-user.png
     - assets/logo.png
+    - assets/mini_logo.png
+    - assets/profile_header.png
     - assets/splash_bg.png
   #   - images/a_dot_ham.jpeg
 

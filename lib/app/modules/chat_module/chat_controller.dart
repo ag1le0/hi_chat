@@ -7,9 +7,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:pea_chat/app/data/model/group_response.dart';
 import 'package:pea_chat/app/data/model/message_response.dart';
+import 'package:pea_chat/app/data/model/user.dart';
 import 'package:pea_chat/app/data/provider/local/session.dart';
 import 'package:pea_chat/app/data/provider/remote/api.dart';
 import 'package:pea_chat/app/modules/landing_module/landing_controller.dart';
+import 'package:pea_chat/app/modules/landing_module/sub_module/video_call_module/video_call_controller.dart';
 import 'package:pea_chat/app/services/notification_service.dart';
 /**
  * GetX Template Generator - fb.com/htngu.99
@@ -25,6 +27,9 @@ class ChatController extends GetxController {
   var currentGroup = GroupResponse().obs;
 
   var listMessage = <MessageResponse>[].obs;
+  var listMember = <User>[].obs;
+
+  VideoCallController callController = Get.find();
 
   late int id;
 
@@ -37,9 +42,11 @@ class ChatController extends GetxController {
   @override
   void onInit() {
     // TODO: implement onInit
-    _subscription = _landingController.notifyController.stream.listen((event) {
+    _subscription = _landingController.messageController.stream.listen((event) {
       if (id == event.group!.id!) {
-        listMessage.insert(0, event);
+        if (event.author!.id != Session.instance.user!.id) {
+          listMessage.insert(0, event);
+        }
       } else {
         NotificationService().show(
             event.id!, event.author!.name!, event.textMessage!.text!,
@@ -67,6 +74,8 @@ class ChatController extends GetxController {
       bearToken: Session.instance.tokenResp!.accessToken,
     )
         .then((value) {
+      fetchMemberList();
+
       if (value != null) {
         currentGroup.value = value.result!;
         if (value.result!.latestMessage != null) {
@@ -86,6 +95,15 @@ class ChatController extends GetxController {
     });
   }
 
+  fetchMemberList() {
+    Api.instance
+        .groupMember(
+            bearToken: Session.instance.tokenResp!.accessToken, groupId: id)
+        .then((value) {
+      listMember.addAll(value!.result!);
+    });
+  }
+
   void sendMessage() {
     var data = {
       'groupId': id,
@@ -98,9 +116,7 @@ class ChatController extends GetxController {
             bearToken: Session.instance.tokenResp!.accessToken, data: data)
         .then((value) {
       listMessage.insert(0, value!.result!);
-    }).catchError((onError) {
-      log(onError.toString());
-    });
+    }).catchError((onError) {});
   }
 
   void sendMedia(File image) async {
@@ -118,7 +134,6 @@ class ChatController extends GetxController {
         .sendMedia(
             bearToken: Session.instance.tokenResp!.accessToken, data: formData)
         .then((value) {
-      //log(value!.toJson((value) => value.toJson()).toString());
       listMessage.insert(0, value!.result!);
     }).catchError((onError) {
       log(onError.toString());

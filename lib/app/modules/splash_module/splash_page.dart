@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:pea_chat/app/common/logo.dart';
+import 'package:pea_chat/app/common/view/logo.dart';
 import 'package:pea_chat/app/modules/login_module/login_bindings.dart';
 import 'package:pea_chat/app/modules/login_module/login_page.dart';
 import 'package:pea_chat/app/modules/splash_module/splash_controller.dart';

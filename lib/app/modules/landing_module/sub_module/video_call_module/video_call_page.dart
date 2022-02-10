@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pea_chat/app/modules/video_call_module/utils/signaling.dart';
-import 'package:pea_chat/app/modules/video_call_module/video_call_controller.dart';
-import 'package:pea_chat/app/modules/video_call_module/widgets/in_call.dart';
-import 'package:pea_chat/app/modules/video_call_module/widgets/offer_call.dart';
-import 'package:pea_chat/app/modules/video_call_module/widgets/ring_ring.dart';
+import 'package:pea_chat/app/modules/landing_module/sub_module/video_call_module/utils/signaling.dart';
+import 'package:pea_chat/app/modules/landing_module/sub_module/video_call_module/video_call_controller.dart';
+import 'package:pea_chat/app/modules/landing_module/sub_module/video_call_module/widgets/in_call.dart';
+import 'package:pea_chat/app/modules/landing_module/sub_module/video_call_module/widgets/offer_call.dart';
+import 'package:pea_chat/app/modules/landing_module/sub_module/video_call_module/widgets/ring_ring.dart';
 /**
  * GetX Template Generator - fb.com/htngu.99
  * */

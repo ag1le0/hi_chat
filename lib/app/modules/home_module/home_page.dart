@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:pea_chat/app/common/view/search_widget.dart';
 import 'package:pea_chat/app/modules/home_module/home_controller.dart';
 import 'package:pea_chat/app/modules/home_module/widgets/group_item.dart';
 import 'package:pea_chat/app/routes/app_pages.dart';
@@ -23,42 +23,51 @@ class HomePage extends GetView<HomeController> {
                 Container(
                   padding: EdgeInsets.symmetric(vertical: 5),
                   height: 70,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
+                  child: Stack(
                     children: [
-                      // CircleAvatar(
-                      //   child: Image.asset(
-                      //     Res.icon_user,
-                      //     fit: BoxFit.fill,
-                      //   ),
-                      // ),
-                      // SizedBox(
-                      //   width: 15,
-                      // ),
-                      Text(
-                        'Chats',
-                        style: TextStyle(
-                            color: HexColor.fromHex('0F1828'),
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      Spacer(),
-                      IconButton(
-                        onPressed: () {},
-                        icon: Icon(FontAwesomeIcons.qrcode),
-                        color: HexColor.fromHex('0F1828'),
-                        iconSize: 17,
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          Get.toNamed(Routes.CREATE_CHAT);
-                        },
-                        icon: Icon(
-                          FontAwesomeIcons.solidEdit,
-                          color: HexColor.fromHex('0F1828'),
+                      Positioned(
+                        child: Image.asset(
+                          Res.home_icon,
+                          height: 47,
+                          width: 63,
                         ),
-                        iconSize: 17,
-                      )
+                        top: 5,
+                        left: 33,
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              'Chats',
+                              style: TextStyle(
+                                  color: HexColor.fromHex('0F1828'),
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Spacer(),
+                            // IconButton(
+                            //   onPressed: () {},
+                            //   icon: Icon(FontAwesomeIcons.qrcode),
+                            //   color: HexColor.fromHex('0F1828'),
+                            //   iconSize: 17,
+                            // ),
+                            GestureDetector(
+                              onTap: () {
+                                Get.toNamed(Routes.CREATE_CHAT);
+                              },
+                              child: Icon(
+                                Icons.messenger_outline,
+                                color: HexColor.fromHex('0F1828'),
+                                size: 24,
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -71,39 +80,7 @@ class HomePage extends GetView<HomeController> {
                       ),
                     ),
                     SliverToBoxAdapter(
-                      child: GestureDetector(
-                        onTap: () {
-                          Get.toNamed(Routes.SEARCH);
-                        },
-                        child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 15),
-                          height: 48,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                              color: HexColor.fromHex('F5F8FC'),
-                              borderRadius: BorderRadius.circular(10)),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.search,
-                                color: HexColor.fromHex('949BA5'),
-                                size: 24,
-                              ),
-                              SizedBox(
-                                width: 15,
-                              ),
-                              Text(
-                                'Tìm kiếm',
-                                style: TextStyle(
-                                  color: HexColor.fromHex('949BA5'),
-                                  fontSize: 15,
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
+                      child: SearchWidget(),
                     ),
                     SliverToBoxAdapter(
                       child: SizedBox(

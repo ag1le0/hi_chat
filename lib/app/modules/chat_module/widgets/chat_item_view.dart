@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:pea_chat/app/common/view/avatar.dart';
 import 'package:pea_chat/app/data/model/message_response.dart';
 import 'package:pea_chat/app/data/provider/local/session.dart';
 import 'package:pea_chat/app/data/provider/remote/api.dart';
@@ -44,7 +45,8 @@ class ChatItemView extends StatelessWidget {
             ? Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (sequence == MessSequence.startNewChatMessage) ...[
+                  if (sequence == MessSequence.startNewChatMessage ||
+                      sequence == MessSequence.startNewChatSingleMessage) ...[
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 18.0),
                       child: Align(
@@ -65,32 +67,9 @@ class ChatItemView extends StatelessWidget {
                                 sequence == MessSequence.startNewChatMessage ||
                                 sequence ==
                                     MessSequence.startNewChatSingleMessage
-                            ? ClipRRect(
-                                borderRadius: BorderRadius.circular(17.5),
-                                clipBehavior: Clip.antiAlias,
-                                child: CachedNetworkImage(
-                                  fit: BoxFit.cover,
-                                  imageUrl: Api.host +
-                                      ((messageResponse.author!.avatar != null)
-                                          ? messageResponse
-                                              .author!.avatar!.thumbUrl!
-                                          : '/peachat/assets/dist/img/default-user-avatar.jpg'),
-                                  httpHeaders: {
-                                    'Authorization': 'Bearer ' +
-                                        Session.instance.tokenResp!.accessToken!
-                                  },
-                                  errorWidget: (ctx, url, error) =>
-                                      CachedNetworkImage(
-                                    imageUrl:
-                                        '${Api.host}/peachat/assets/dist/img/default-user-avatar.jpg',
-                                    httpHeaders: {
-                                      'Authorization': 'Bearer ' +
-                                          Session
-                                              .instance.tokenResp!.accessToken!
-                                    },
-                                    errorWidget: (_, __, ___) => SizedBox(),
-                                  ),
-                                ))
+                            ? Avatar(
+                                media: messageResponse.author!.avatar,
+                              )
                             : SizedBox(),
                       ),
                       SizedBox(
@@ -147,47 +126,58 @@ class ChatItemView extends StatelessWidget {
                                   )
                                 ],
                                 if (messageResponse.textMessage != null)
-                                  Text(
-                                    messageResponse.textMessage!.text!,
-                                    softWrap: true,
-                                    style: TextStyle(
-                                        color: HexColor.fromHex('1B2B48'),
-                                        height: 1.6,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w400),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 4.0),
+                                    child: Text(
+                                      messageResponse.textMessage!.text!,
+                                      softWrap: true,
+                                      style: TextStyle(
+                                          color: HexColor.fromHex('1B2B48'),
+                                          height: 1.6,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w400),
+                                    ),
                                   ),
                                 if (messageResponse.mediaMessage != null)
-                                  GestureDetector(
-                                    onTap: () {
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (_) => ImageFullScreen(
-                                            url: Api.host +
-                                                messageResponse
-                                                    .mediaMessage!.media!.url!,
-                                            header: {
-                                              'Authorization': 'Bearer ' +
-                                                  Session.instance.tokenResp!
-                                                      .accessToken!
-                                            },
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 4.0),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (_) => ImageFullScreen(
+                                              url: Api.host +
+                                                  messageResponse.mediaMessage!
+                                                      .media!.url!,
+                                              header: {
+                                                'Authorization': 'Bearer ' +
+                                                    Session.instance.tokenResp!
+                                                        .accessToken!
+                                              },
+                                            ),
                                           ),
-                                        ),
-                                      );
-                                    },
-                                    child: CachedNetworkImage(
-                                      height: Get.height / 3,
-                                      fit: BoxFit.fitHeight,
-                                      imageUrl: Api.host +
-                                          messageResponse
-                                              .mediaMessage!.media!.url!,
-                                      httpHeaders: {
-                                        'Authorization': 'Bearer ' +
-                                            Session.instance.tokenResp!
-                                                .accessToken!
+                                        );
                                       },
+                                      child: CachedNetworkImage(
+                                        height: Get.height / 3,
+                                        fit: BoxFit.fitHeight,
+                                        imageUrl: Api.host +
+                                            messageResponse
+                                                .mediaMessage!.media!.url!,
+                                        httpHeaders: {
+                                          'Authorization': 'Bearer ' +
+                                              Session.instance.tokenResp!
+                                                  .accessToken!
+                                        },
+                                      ),
                                     ),
                                   ),
                                 if (sequence == MessSequence.singleMessage ||
+                                    sequence ==
+                                        MessSequence
+                                            .startNewChatSingleMessage ||
                                     sequence == MessSequence.endMessage) ...[
                                   Text(
                                     DateFormat('HH:mm')
@@ -262,27 +252,61 @@ class ChatItemView extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     if (messageResponse.textMessage != null)
-                                      Text(
-                                        messageResponse.textMessage!.text!,
-                                        softWrap: true,
-                                        style: TextStyle(
-                                            color: HexColor.fromHex('FFFFFF'),
-                                            height: 1.6,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w400),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 4.0),
+                                        child: Text(
+                                          messageResponse.textMessage!.text!,
+                                          softWrap: true,
+                                          style: TextStyle(
+                                              color: HexColor.fromHex('FFFFFF'),
+                                              height: 1.6,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w400),
+                                        ),
                                       ),
                                     if (messageResponse.mediaMessage != null)
-                                      CachedNetworkImage(
-                                        height: Get.height / 3,
-                                        fit: BoxFit.fitHeight,
-                                        imageUrl: Api.host +
-                                            messageResponse
-                                                .mediaMessage!.media!.url!,
-                                        httpHeaders: {
-                                          'Authorization': 'Bearer ' +
-                                              Session.instance.tokenResp!
-                                                  .accessToken!
-                                        },
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 4.0),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                builder: (_) => ImageFullScreen(
+                                                  url: Api.host +
+                                                      messageResponse
+                                                          .mediaMessage!
+                                                          .media!
+                                                          .url!,
+                                                  header: {
+                                                    'Authorization': 'Bearer ' +
+                                                        Session
+                                                            .instance
+                                                            .tokenResp!
+                                                            .accessToken!
+                                                  },
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          child: CachedNetworkImage(
+                                            height: Get.height / 3,
+                                            fit: BoxFit.fitHeight,
+                                            imageUrl: Api.host +
+                                                messageResponse
+                                                    .mediaMessage!.media!.url!,
+                                            httpHeaders: {
+                                              'Authorization': 'Bearer ' +
+                                                  Session.instance.tokenResp!
+                                                      .accessToken!
+                                            },
+                                            progressIndicatorBuilder:
+                                                (context, url, progress) {
+                                              return CupertinoActivityIndicator();
+                                            },
+                                          ),
+                                        ),
                                       ),
                                     if (sequence ==
                                             MessSequence.singleMessage ||
