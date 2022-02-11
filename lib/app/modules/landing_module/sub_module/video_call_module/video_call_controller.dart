@@ -73,6 +73,7 @@ class VideoCallController extends GetxController {
 
   void _connect() async {
     _signaling ??= Signaling(Api.hostClear)..connect();
+
     _signaling?.onSignalingStateChange = (SignalingState state) {
       switch (state) {
         case SignalingState.ConnectionClosed:
@@ -162,7 +163,7 @@ class VideoCallController extends GetxController {
 
   @override
   void onClose() {
-    _signaling?.close();
+    signaling?.close();
     localRenderer.dispose();
     remoteRenderer.dispose();
     // TODO: implement onClose

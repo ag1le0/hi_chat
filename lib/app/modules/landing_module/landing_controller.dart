@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:dart_amqp/dart_amqp.dart';
 import 'package:get/get.dart';
+import 'package:pea_chat/app/common/custom_exception.dart';
 import 'package:pea_chat/app/common/response/notify_response.dart';
 import 'package:pea_chat/app/data/model/friend_request_response.dart';
 import 'package:pea_chat/app/data/model/message_response.dart';
@@ -108,8 +109,13 @@ class LandingController extends GetxController {
 
         notifyController.sink.add(data);
       });
-    }).catchError((error) {
-      log(error.toString());
+    }).catchError((onError) {
+      if (onError is CustomException) {
+        CustomException e = onError;
+        Utils.showToast(e.message, Get.context!);
+      } else {
+        Utils.showToast('Some thing wrong', Get.context!);
+      }
     });
   }
 

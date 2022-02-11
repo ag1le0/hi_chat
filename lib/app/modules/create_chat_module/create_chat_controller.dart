@@ -4,11 +4,13 @@ import 'package:dio/dio.dart' as dio;
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:gmo_media_picker/media_picker.dart';
+import 'package:pea_chat/app/common/custom_exception.dart';
 import 'package:pea_chat/app/data/model/user.dart';
 import 'package:pea_chat/app/data/provider/local/session.dart';
 import 'package:pea_chat/app/data/provider/remote/api.dart';
 import 'package:pea_chat/app/modules/home_module/home_controller.dart';
 import 'package:pea_chat/app/routes/app_pages.dart';
+import 'package:pea_chat/app/utils/utils.dart';
 /**
  * GetX Template Generator - fb.com/htngu.99
  * */
@@ -73,6 +75,13 @@ class CreateChatController extends GetxController {
         .then((value) {
       Get.offNamed(Routes.CHAT + '/${value!.result!.id!}');
       _homeController.fetchGroupList();
+    }).catchError((onError) {
+      if (onError is CustomException) {
+        CustomException e = onError;
+        Utils.showToast(e.message, Get.context!);
+      } else {
+        Utils.showToast('Some thing wrong', Get.context!);
+      }
     });
   }
 }

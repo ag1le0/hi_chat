@@ -222,8 +222,10 @@ class Api {
     }
   }
 
-  Future<CommonResponse<bool>?> unregisterChannel({bearToken, data}) async {
+  Future<CommonResponse<bool>?> unregisterChannel({bearToken, param}) async {
     try {
+      log('#######' + param.toString());
+      log('#######' + bearToken);
       var res = await _dio
           .post('$baseUrl/api/user/channel/unregister',
               options: Options(
@@ -231,7 +233,7 @@ class Api {
                   'Authorization': 'Bearer $bearToken',
                 },
               ),
-              queryParameters: data)
+              queryParameters: param)
           .timeout(const Duration(seconds: 15));
       return CommonResponse.fromJson(res.data, (data) => data as bool);
     } on DioError catch (dioEx) {

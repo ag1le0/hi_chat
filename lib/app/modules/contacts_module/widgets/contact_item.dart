@@ -1,12 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pea_chat/app/common/custom_exception.dart';
 import 'package:pea_chat/app/common/view/avatar.dart';
 import 'package:pea_chat/app/data/model/user.dart';
 import 'package:pea_chat/app/data/provider/local/session.dart';
 import 'package:pea_chat/app/data/provider/remote/api.dart';
 import 'package:pea_chat/app/routes/app_pages.dart';
 import 'package:pea_chat/app/utils/extension.dart';
+import 'package:pea_chat/app/utils/utils.dart';
 import 'package:pea_chat/res.dart';
 
 class ContactItem extends StatelessWidget {
@@ -24,6 +26,13 @@ class ContactItem extends StatelessWidget {
                     idFriend: value.value.id)
                 .then((value) {
               Get.toNamed(Routes.CHAT + '/${value!.result!.id!}');
+            }).catchError((onError) {
+              if (onError is CustomException) {
+                CustomException e = onError;
+                Utils.showToast(e.message, Get.context!);
+              } else {
+                Utils.showToast('Some thing wrong', Get.context!);
+              }
             });
           },
           child: Container(

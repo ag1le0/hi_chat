@@ -6,6 +6,7 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart';
 import 'package:pea_chat/app/services/notification_service.dart';
 
+import 'app/middleware/auth_controller.dart';
 import 'app/routes/app_pages.dart';
 import 'app/utils/dev_http_overrides.dart';
 
@@ -13,6 +14,7 @@ void main() async {
   HttpOverrides.global = DevHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
   await NotificationService().init();
+  Get.put(AuthController());
   runApp(const MyApp());
 }
 
