@@ -16,7 +16,7 @@ import 'package:pea_chat/app/data/model/user_channel.dart';
 class Api {
   static const String baseUrl = '$host/peachat';
   static const String host = "http://$hostClear:8988";
-  static const String hostClear = "192.168.162.17";
+  static const String hostClear = "10.224.125.34";
   final _dio = Dio();
 
   Api._privateConstructor();

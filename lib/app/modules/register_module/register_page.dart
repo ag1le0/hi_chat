@@ -134,8 +134,7 @@ class RegisterPage extends GetView<RegisterController> {
                             style: TextStyle(color: HexColor.fromHex('00CB9A')),
                           ),
                           onPressed: () {
-                            Get.until(
-                                (route) => route.settings.name == Routes.LOGIN);
+                            Get.back();
                           },
                         ),
                       ],

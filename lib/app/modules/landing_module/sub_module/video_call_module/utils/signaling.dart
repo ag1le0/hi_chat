@@ -141,18 +141,18 @@ class Signaling {
       //   break;
       case 'offer':
         {
-          var peerId = data['from'];
-
-          desc = data['description'];
-          var sessionId = data['session_id'];
-          this.sessionId = sessionId;
+          dataTemp = data;
+          var peerId = dataTemp['from'];
+          var sessionId = dataTemp['session_id'];
           var session = _sessions[sessionId];
+
           var newSession = await _createSession(
             session,
             peerId: peerId,
             sessionId: sessionId,
           );
           _sessions[sessionId] = newSession;
+
           onCallStateChange?.call(newSession, CallState.CallStateRinging);
 
           //var description = data['description'];
@@ -172,6 +172,8 @@ class Signaling {
         break;
       case 'answer':
         {
+          log(data.toString());
+
           var description = data['description'];
           var sessionId = data['session_id'];
           var session = _sessions[sessionId];
@@ -228,29 +230,31 @@ class Signaling {
     }
   }
 
-  dynamic sessionId;
-  dynamic desc;
+  var dataTemp;
 
   Future<void> acceptCall() async {
-    var tempSession = _sessions[sessionId];
+    var desc = dataTemp['description'];
+    var sessionId = dataTemp['session_id'];
+    var session = _sessions[sessionId];
 
-    log(desc.toString());
-    await tempSession?.pc?.setRemoteDescription(
+    await session!.pc?.setRemoteDescription(
         RTCSessionDescription(desc['sdp'], desc['type']));
-    await _createAnswer(tempSession!);
-    if (tempSession.remoteCandidates.isNotEmpty) {
-      tempSession.remoteCandidates.forEach((candidate) async {
-        await tempSession.pc?.addCandidate(candidate);
+    await _createAnswer(session);
+
+    if (session.remoteCandidates.isNotEmpty) {
+      session.remoteCandidates.forEach((candidate) async {
+        await session.pc?.addCandidate(candidate);
       });
-      tempSession.remoteCandidates.clear();
+      session.remoteCandidates.clear();
     }
-    onCallStateChange?.call(tempSession, CallState.CallStateConnected);
+
+    onCallStateChange?.call(session, CallState.CallStateConnected);
   }
 
   Future<void> connect() async {
-    var schem = 'https';
+    var schem = 'http';
     if (kIsWeb) {
-      schem = 'wss';
+      schem = 'ws';
     }
     var url = '$schem://$_host:$_port/ws';
     _socket = SimpleWebSocket(url);
@@ -310,7 +314,7 @@ class Signaling {
       'video': {
         'mandatory': {
           'minWidth':
-              '640', // Provide your own width, height and frame rate here
+              '320', // Provide your own width, height and frame rate here
           'minHeight': '480',
           'minFrameRate': '30',
         },
