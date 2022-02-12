@@ -4,6 +4,7 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
+import 'package:pea_chat/app/data/model/user.dart';
 import 'package:pea_chat/app/data/provider/local/session.dart' as S;
 
 import '../utils/turn.dart';
@@ -39,6 +40,7 @@ class Signaling {
   JsonEncoder _encoder = JsonEncoder();
   JsonDecoder _decoder = JsonDecoder();
   String _selfId = S.Session.instance.user!.username!;
+  User _self = S.Session.instance.user!;
   SimpleWebSocket? _socket;
   var _host;
   var _port = 8086;
@@ -49,6 +51,7 @@ class Signaling {
 
   Function(SignalingState state)? onSignalingStateChange;
   Function(Session session, CallState state)? onCallStateChange;
+  Function(User peer)? onPeerChange;
   Function(MediaStream stream)? onLocalStream;
   Function(Session session, MediaStream stream)? onAddRemoteStream;
   Function(Session session, MediaStream stream)? onRemoveRemoteStream;
@@ -142,8 +145,9 @@ class Signaling {
       case 'offer':
         {
           dataTemp = data;
-          var peerId = dataTemp['from'];
-          var sessionId = dataTemp['session_id'];
+          var peerId = data['from'];
+          var userDetail = data['user_detail'];
+          var sessionId = data['session_id'];
           var session = _sessions[sessionId];
 
           var newSession = await _createSession(
@@ -153,6 +157,7 @@ class Signaling {
           );
           _sessions[sessionId] = newSession;
 
+          onPeerChange?.call(User.fromJson(userDetail));
           onCallStateChange?.call(newSession, CallState.CallStateRinging);
 
           //var description = data['description'];
@@ -172,13 +177,14 @@ class Signaling {
         break;
       case 'answer':
         {
-          log(data.toString());
-
           var description = data['description'];
           var sessionId = data['session_id'];
+          var userDetail = data['user_detail'];
           var session = _sessions[sessionId];
           session?.pc?.setRemoteDescription(
               RTCSessionDescription(description['sdp'], description['type']));
+
+          onPeerChange?.call(User.fromJson(userDetail));
           onCallStateChange?.call(session!, CallState.CallStateConnected);
         }
         break;
@@ -405,6 +411,7 @@ class Signaling {
       _send('offer', {
         'to': session.pid,
         'from': _selfId,
+        'user_detail': _self.toJson(),
         'description': {'sdp': s.sdp, 'type': s.type},
         'session_id': session.sid,
       });
@@ -420,6 +427,7 @@ class Signaling {
       _send('answer', {
         'to': session.pid,
         'from': _selfId,
+        'user_detail': _self.toJson(),
         'description': {'sdp': s.sdp, 'type': s.type},
         'session_id': session.sid,
       });

@@ -52,13 +52,13 @@ class OfferCall extends GetWidget<VideoCallController> {
                           SizedBox(
                             height: 15,
                           ),
-                          Text(
-                            'Huong Huong',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 32,
-                            ),
-                          ),
+                          Obx(() => Text(
+                                controller.peer.value.name ?? '',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 32,
+                                ),
+                              )),
                         ],
                       ),
                       Container(

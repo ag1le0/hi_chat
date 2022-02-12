@@ -35,8 +35,8 @@ class InCall extends GetWidget<VideoCallController> {
                   right: 20.0,
                   top: 50.0,
                   child: Container(
-                    width: orientation == Orientation.portrait ? 90.0 : 120.0,
-                    height: orientation == Orientation.portrait ? 120.0 : 90.0,
+                    width: orientation == Orientation.portrait ? 120.0 : 160.0,
+                    height: orientation == Orientation.portrait ? 160.0 : 120.0,
                     child: Obx(() => controller.localVideoReady.value
                         ? RTCVideoView(
                             controller.localRenderer,

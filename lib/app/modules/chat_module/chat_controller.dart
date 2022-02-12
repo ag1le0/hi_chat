@@ -189,6 +189,11 @@ class ChatController extends GetxController {
     });
   }
 
+  void callHandle() {
+    var peer = listMember.first;
+    callController.invitePeer(peer);
+  }
+
   @override
   void onClose() {
     _subscription!.cancel();

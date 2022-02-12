@@ -1,5 +1,7 @@
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:get/get.dart';
+import 'package:pea_chat/app/data/model/user.dart';
+import 'package:pea_chat/app/data/provider/local/session.dart' as S;
 import 'package:pea_chat/app/data/provider/remote/api.dart';
 import 'package:pea_chat/app/modules/landing_module/sub_module/video_call_module/utils/signaling.dart';
 import 'package:pea_chat/app/modules/landing_module/sub_module/video_call_module/widgets/in_call.dart';
@@ -14,6 +16,8 @@ import 'package:wakelock/wakelock.dart';
 class VideoCallController extends GetxController {
   Signaling? _signaling;
   RxList<dynamic> _peers = [].obs;
+
+  var peer = User().obs;
 
   var remoteVideoReady = false.obs;
   var localVideoReady = false.obs;
@@ -62,6 +66,7 @@ class VideoCallController extends GetxController {
   init() async {
     _initRenderers();
     _connect();
+    selfId = S.Session.instance.user!.username;
   }
 
   _initRenderers() async {
@@ -115,9 +120,12 @@ class VideoCallController extends GetxController {
       }
     };
 
-    _signaling?.onPeersUpdate = ((event) {
-      selfId = event['self'];
-      peers = event['peers'];
+    // _signaling?.onPeersUpdate = ((event) {
+    //   selfId = event['self'];
+    //   peers = event['peers'];
+    // });
+    _signaling?.onPeerChange = ((v) {
+      peer.value = v;
     });
 
     _signaling?.onLocalStream = ((stream) {
@@ -136,9 +144,10 @@ class VideoCallController extends GetxController {
     });
   }
 
-  invitePeer(String peerId) async {
-    if (_signaling != null && peerId != selfId) {
-      _signaling?.invite(peerId);
+  invitePeer(User peer) async {
+    this.peer.value = peer;
+    if (_signaling != null && (peer.username!) != selfId) {
+      _signaling?.invite(peer.username!);
     }
   }
 

@@ -9,8 +9,6 @@ import 'package:get/get.dart';
 import 'package:gmo_media_picker/media_picker.dart';
 import 'package:pea_chat/app/data/model/group_response.dart';
 import 'package:pea_chat/app/data/model/message_response.dart';
-import 'package:pea_chat/app/data/model/user.dart';
-import 'package:pea_chat/app/data/provider/local/session.dart';
 import 'package:pea_chat/app/modules/chat_module/chat_controller.dart';
 import 'package:pea_chat/app/modules/chat_module/widgets/chat_item_view.dart';
 import 'package:pea_chat/app/utils/extension.dart';
@@ -52,16 +50,7 @@ class ChatPage extends GetView<ChatController> {
             actions: [
               Obx(() => (controller.currentGroup.value.type == GroupType.FRIEND)
                   ? IconButton(
-                      onPressed: () {
-                        var peer = User();
-                        for (var element in controller.listMember) {
-                          if (element.username !=
-                              Session.instance.user!.username) {
-                            peer = element;
-                          }
-                        }
-                        controller.callController.invitePeer(peer.username!);
-                      },
+                      onPressed: controller.callHandle,
                       icon: Icon(
                         Icons.videocam_outlined,
                         size: 24,
