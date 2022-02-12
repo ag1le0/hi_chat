@@ -190,7 +190,10 @@ class ChatController extends GetxController {
   }
 
   void callHandle() {
-    var peer = listMember.first;
+    var peer = listMember
+        .where((p0) => p0.username != Session.instance.user!.username!)
+        .first;
+
     callController.invitePeer(peer);
   }
 

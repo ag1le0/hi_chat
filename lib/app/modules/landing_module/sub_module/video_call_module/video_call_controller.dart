@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:get/get.dart';
 import 'package:pea_chat/app/data/model/user.dart';
@@ -146,7 +148,11 @@ class VideoCallController extends GetxController {
 
   invitePeer(User peer) async {
     this.peer.value = peer;
-    if (_signaling != null && (peer.username!) != selfId) {
+
+    log('######' + (peer.username!).toString());
+    log('######' + (selfId).toString());
+
+    if (_signaling != null && peer.username! != selfId) {
       _signaling?.invite(peer.username!);
     }
   }
