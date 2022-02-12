@@ -18,7 +18,7 @@ class CreateChatPage extends GetView<CreateChatController> {
         title: Text('New chatroom'),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black87,
-        elevation: .15,
+        elevation: 0,
         actions: [
           Padding(
             padding: EdgeInsets.only(right: 19),
@@ -53,7 +53,7 @@ class CreateChatPage extends GetView<CreateChatController> {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
         child: Column(
           children: [
             SizedBox(
@@ -61,14 +61,15 @@ class CreateChatPage extends GetView<CreateChatController> {
               child: Row(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.only(
+                        left: 0.0, right: 8, top: 8, bottom: 8),
                     child: Container(
                       height: 50,
                       width: 50,
                       clipBehavior: Clip.antiAlias,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: HexColor.fromHex('EBF2FA')),
+                          color: HexColor.fromHex('F5F8FC')),
                       child: GestureDetector(
                         onTap: () {
                           GmoMediaPicker.picker(
@@ -110,7 +111,7 @@ class CreateChatPage extends GetView<CreateChatController> {
                           alignment: Alignment.centerLeft,
                           child: Container(
                               padding: EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 15),
+                                  horizontal: 0, vertical: 15),
                               child: Text(
                                 'Selected (${controller.listGroupMembers.length})',
                                 style: TextStyle(fontWeight: FontWeight.bold),
@@ -208,25 +209,30 @@ class CreateChatPage extends GetView<CreateChatController> {
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 15),
+                            margin: EdgeInsets.symmetric(
+                                horizontal: 0, vertical: 15),
                             child: Text(
                               'Contacts (${controller.listContacts.length})',
                               style: TextStyle(fontWeight: FontWeight.bold),
                             )),
                       ),
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextField(
-                          style: TextStyle(color: Colors.black),
-                          controller: controller.searchController,
-                          decoration: InputDecoration(
-                              border: InputBorder.none,
-                              fillColor: HexColor.fromHex('EBF2FA'),
-                              filled: true,
-                              prefixIcon: Icon(Icons.search),
-                              hintText: 'Name/username'),
-                          maxLines: 1,
+                        padding: const EdgeInsets.all(0.0),
+                        child: Container(
+                          clipBehavior: Clip.antiAlias,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10)),
+                          child: TextField(
+                            style: TextStyle(color: Colors.black),
+                            controller: controller.searchController,
+                            decoration: InputDecoration(
+                                border: InputBorder.none,
+                                fillColor: HexColor.fromHex('F5F8FC'),
+                                filled: true,
+                                prefixIcon: Icon(Icons.search),
+                                hintText: 'Name/username'),
+                            maxLines: 1,
+                          ),
                         ),
                       ),
                       Expanded(
@@ -244,6 +250,9 @@ class CreateChatPage extends GetView<CreateChatController> {
                                                 .remove(element);
                                           },
                                           child: ListTile(
+                                            contentPadding:
+                                                const EdgeInsets.symmetric(
+                                                    vertical: 2, horizontal: 1),
                                             leading: SizedBox(
                                               height: 40,
                                               width: 40,

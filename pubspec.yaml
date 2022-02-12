@@ -86,6 +86,9 @@ flutter:
     - assets/default-group-avatar.png
     - assets/default-user-avatar.jpg
     - assets/home_icon.png
+    - assets/ic_china.png
+    - assets/ic_eng.png
+    - assets/ic_vn.png
     - assets/icon-bottom-right.png
     - assets/icon-google.png
     - assets/icon-top-right.png

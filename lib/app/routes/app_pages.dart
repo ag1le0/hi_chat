@@ -1,3 +1,7 @@
+import '../../app/modules/change_language_module/change_language_page.dart';
+import '../../app/modules/change_language_module/change_language_bindings.dart';
+import '../../app/modules/change_pass_module/change_pass_page.dart';
+import '../../app/modules/change_pass_module/change_pass_bindings.dart';
 import 'package:get/get.dart';
 import 'package:pea_chat/app/middleware/global_middleware.dart';
 import 'package:pea_chat/app/modules/chat_module/chat_bindings.dart';
@@ -112,5 +116,15 @@ abstract class AppPages {
         page: () => RegisterPage(),
         binding: RegisterBinding(),
         middlewares: [GlobalMiddleware()]),
+    GetPage(
+      name: Routes.CHANGE_PASS,
+      page: () => ChangePassPage(),
+      binding: ChangePassBinding(),
+    ),
+    GetPage(
+      name: Routes.CHANGE_LANGUAGE,
+      page: () => ChangeLanguagePage(),
+      binding: ChangeLanguageBinding(),
+    ),
   ];
 }

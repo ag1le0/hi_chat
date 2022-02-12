@@ -20,8 +20,6 @@ class GroupItem extends StatelessWidget {
               value.value.type == GroupType.NORMAL,
           child: InkWell(
             onTap: () {
-              value.value.unreadMessageNumber = 0;
-              value.refresh();
               Get.toNamed(Routes.CHAT + '/${value.value.id!}');
             },
             child: Container(
@@ -71,7 +69,11 @@ class GroupItem extends StatelessWidget {
                         mainAxisSize: MainAxisSize.max,
                         children: [
                           Text(
-                            value.value.name!,
+                            (value.value.name == null ||
+                                    value.value.type == GroupType.NORMAL &&
+                                        value.value.name!.isEmpty)
+                                ? 'No name group'
+                                : value.value.name!,
                             style: TextStyle(
                                 fontSize: 17,
                                 color: HexColor.fromHex('212226'),

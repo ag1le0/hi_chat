@@ -22,9 +22,7 @@ import 'package:pea_chat/app/utils/keyboard.dart';
 class ChatPage extends GetView<ChatController> {
   ChatPage({
     Key? key,
-  }) : super(key: key) {
-    controller.fetchData();
-  }
+  }) : super(key: key) {}
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +80,12 @@ class ChatPage extends GetView<ChatController> {
             title: SizedBox(
               width: Get.width / 3 * 2,
               child: Obx(() => Text(
-                    controller.currentGroup.value.name ?? '',
+                    (controller.currentGroup.value.name == null ||
+                            controller.currentGroup.value.type ==
+                                    GroupType.NORMAL &&
+                                controller.currentGroup.value.name!.isEmpty)
+                        ? 'No name group'
+                        : controller.currentGroup.value.name!,
                     style: TextStyle(
                         fontSize: 20, overflow: TextOverflow.ellipsis),
                   )),
@@ -121,12 +124,6 @@ class ChatPage extends GetView<ChatController> {
           )));
     }
     return list;
-
-    // return controller.listMessage.map((element) {
-    //   return ChatItemView(
-    //     messageResponse: element,
-    //   );
-    // }).toList();
   }
 
   Object? getElement(List list, int index) {
@@ -201,98 +198,78 @@ class BottomSendNavigation extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisSize: MainAxisSize.max,
               children: [
-                MediaQuery.of(context).viewInsets.bottom != 0
-                    ? Container(
-                        height: 35,
-                        child: Row(
-                          children: [
-                            Container(
-                              height: 24,
-                              width: 45,
-                              child: Center(
-                                child: Icon(
-                                  Icons.close,
-                                  color: Colors.blue,
+                Container(
+                  height: 35,
+                  child: Row(
+                    children: [
+                      PopupMenuButton(
+                        icon: Icon(
+                          Icons.add,
+                          color: HexColor.fromHex('ADB5BD'),
+                        ),
+                        iconSize: 24,
+                        itemBuilder: (context) => [
+                          PopupMenuItem(
+                              child: GestureDetector(
+                            onTap: () {
+                              Get.to(() => CameraCamera(
+                                    onFile: (image) async {
+                                      Get.back();
+                                      if (image != null) {
+                                        controller.sendMedia(image);
+                                      }
+                                    },
+                                  ));
+                            },
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.add_a_photo_outlined,
+                                  color: HexColor.fromHex('#0AE4B0'),
                                   size: 24,
                                 ),
-                              ),
-                            )
-                          ],
-                        ),
-                      )
-                    : Container(
-                        height: 35,
-                        child: Row(
-                          children: [
-                            PopupMenuButton(
-                              icon: Icon(
-                                Icons.add,
-                                color: HexColor.fromHex('ADB5BD'),
-                              ),
-                              iconSize: 24,
-                              itemBuilder: (context) => [
-                                PopupMenuItem(
-                                    child: GestureDetector(
-                                  onTap: () {
-                                    Get.to(() => CameraCamera(
-                                          onFile: (image) async {
-                                            Get.back();
-                                            if (image != null) {
-                                              controller.sendMedia(image);
-                                            }
-                                          },
-                                        ));
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.add_a_photo_outlined,
-                                        color: HexColor.fromHex('#0AE4B0'),
-                                        size: 24,
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Text('Camera'),
-                                    ],
-                                  ),
-                                )),
-                                PopupMenuItem(
-                                    child: GestureDetector(
-                                  onTap: () {
-                                    GmoMediaPicker.picker(
-                                      context,
-                                      isMulti: false,
-                                      type: RequestType.image,
-                                      isReview: true,
-                                      singleCallback:
-                                          (AssetEntity asset) async {
-                                        File? image = await asset.file;
-                                        if (image != null) {
-                                          controller.sendMedia(image);
-                                        }
-                                      },
-                                    );
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.broken_image_outlined,
-                                        color: HexColor.fromHex('#0AE4B0'),
-                                        size: 24,
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Text('Library'),
-                                    ],
-                                  ),
-                                ))
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text('Camera'),
                               ],
-                            )
-                          ],
-                        ),
-                      ),
+                            ),
+                          )),
+                          PopupMenuItem(
+                              child: GestureDetector(
+                            onTap: () {
+                              GmoMediaPicker.picker(
+                                context,
+                                isMulti: false,
+                                type: RequestType.image,
+                                isReview: true,
+                                singleCallback: (AssetEntity asset) async {
+                                  File? image = await asset.file;
+                                  if (image != null) {
+                                    controller.sendMedia(image);
+                                  }
+                                },
+                              );
+                            },
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.broken_image_outlined,
+                                  color: HexColor.fromHex('#0AE4B0'),
+                                  size: 24,
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text('Library'),
+                              ],
+                            ),
+                          ))
+                        ],
+                      )
+                    ],
+                  ),
+                ),
                 Expanded(
                   child: Container(
                     margin: EdgeInsets.symmetric(horizontal: 6.5),

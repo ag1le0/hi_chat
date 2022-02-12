@@ -7,7 +7,9 @@ import 'package:gmo_media_picker/media_picker.dart';
 import 'package:pea_chat/app/common/view/avatar.dart';
 import 'package:pea_chat/app/data/provider/local/session.dart';
 import 'package:pea_chat/app/modules/settings_module/settings_controller.dart';
+import 'package:pea_chat/app/modules/settings_module/sub_module/info_page.dart';
 import 'package:pea_chat/app/modules/settings_module/widgets/item.dart';
+import 'package:pea_chat/app/routes/app_pages.dart';
 import 'package:pea_chat/app/utils/extension.dart';
 
 import '../../../res.dart';
@@ -19,6 +21,7 @@ class SettingsPage extends GetView<SettingsController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
@@ -71,6 +74,9 @@ class SettingsPage extends GetView<SettingsController> {
               delegate: SliverChildListDelegate(
             [
               ProfileItem(
+                onTap: () {
+                  Get.to(() => InfoPage());
+                },
                 title: 'User Info',
                 icon: Icon(
                   FontAwesomeIcons.userEdit,
@@ -80,15 +86,9 @@ class SettingsPage extends GetView<SettingsController> {
                 subtitle: Session.instance.user!.nickName,
               ),
               ProfileItem(
-                title: 'Notification',
-                icon: Icon(
-                  FontAwesomeIcons.bell,
-                  color: Colors.orange,
-                  size: 18,
-                ),
-                subtitle: 'On',
-              ),
-              ProfileItem(
+                onTap: () {
+                  Get.toNamed(Routes.CHANGE_LANGUAGE);
+                },
                 title: 'Language',
                 icon: Icon(
                   FontAwesomeIcons.language,
@@ -98,10 +98,22 @@ class SettingsPage extends GetView<SettingsController> {
                 subtitle: 'English',
               ),
               ProfileItem(
+                onTap: () {
+                  Get.toNamed(Routes.CHANGE_PASS);
+                },
                 title: 'Change Password',
                 icon: Icon(
                   FontAwesomeIcons.key,
                   color: Colors.orange,
+                  size: 18,
+                ),
+              ),
+              ProfileItem(
+                hideExpandIcon: true,
+                title: 'About Us',
+                icon: Icon(
+                  FontAwesomeIcons.info,
+                  color: Colors.grey,
                   size: 18,
                 ),
               ),

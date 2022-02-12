@@ -56,6 +56,7 @@ class SearchPage extends GetView<SearchController> {
                       delegate: SliverChildListDelegate(
                           controller.userSearchList.map((event) {
                         return ListTile(
+                          contentPadding: EdgeInsets.zero,
                           onTap: () {
                             Get.toNamed(Routes.USER + '/${event.id}');
                           },

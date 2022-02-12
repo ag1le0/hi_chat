@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pea_chat/app/data/model/media_data.dart';
 import 'package:pea_chat/app/data/provider/local/session.dart';
 import 'package:pea_chat/app/data/provider/remote/api.dart';
+import 'package:pea_chat/app/utils/extension.dart';
 import 'package:pea_chat/res.dart';
 
 class Avatar extends StatelessWidget {
@@ -27,29 +28,30 @@ class Avatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: size,
-      width: size,
-      child: ClipRRect(
+    return Container(
+        height: size,
+        width: size,
+        decoration: BoxDecoration(
+          color: HexColor.fromHex('F5F8FC'),
           borderRadius: BorderRadius.circular(size / 2),
-          clipBehavior: Clip.antiAlias,
-          child: media != null
-              ? CachedNetworkImage(
-                  fit: BoxFit.cover,
-                  imageUrl: Api.host + media!.url!,
-                  httpHeaders: {
-                    'Authorization':
-                        'Bearer ' + Session.instance.tokenResp!.accessToken!
-                  },
-                  errorWidget: (ctx, url, error) => Image.asset(
-                    defaultImage,
-                    fit: BoxFit.cover,
-                  ),
-                )
-              : Image.asset(
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: media != null
+            ? CachedNetworkImage(
+                fit: BoxFit.cover,
+                imageUrl: Api.host + media!.url!,
+                httpHeaders: {
+                  'Authorization':
+                      'Bearer ' + Session.instance.tokenResp!.accessToken!
+                },
+                errorWidget: (ctx, url, error) => Image.asset(
                   defaultImage,
                   fit: BoxFit.cover,
-                )),
-    );
+                ),
+              )
+            : Image.asset(
+                defaultImage,
+                fit: BoxFit.cover,
+              ));
   }
 }

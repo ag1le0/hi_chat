@@ -25,7 +25,7 @@ class ProfileItem extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: Get.width,
-        margin: EdgeInsets.all(8),
+        margin: EdgeInsets.symmetric(horizontal: 24, vertical: 8),
         padding: EdgeInsets.all(15),
         decoration: BoxDecoration(
             border: Border.all(

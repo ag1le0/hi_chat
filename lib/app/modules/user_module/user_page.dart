@@ -13,6 +13,7 @@ class UserPage extends GetView<UserController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
           systemOverlayStyle: const SystemUiOverlayStyle(
               statusBarColor: Colors.transparent,
@@ -51,7 +52,9 @@ class UserPage extends GetView<UserController> {
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 16.0),
-                child: Text('User information'),
+                child: Text(
+                  'User information',
+                ),
               ),
               const SizedBox(height: 10.0),
               Column(
@@ -112,7 +115,7 @@ class ProfileHeader extends GetWidget<UserController> {
       width: double.infinity,
       child: Column(
         children: <Widget>[
-          Avatar(media: user.value.avatar),
+          Obx(() => Avatar(media: user.value.avatar)),
           SizedBox(
             height: 10,
           ),

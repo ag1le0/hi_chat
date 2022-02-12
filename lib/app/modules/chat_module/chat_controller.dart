@@ -10,6 +10,7 @@ import 'package:pea_chat/app/data/model/message_response.dart';
 import 'package:pea_chat/app/data/model/user.dart';
 import 'package:pea_chat/app/data/provider/local/session.dart';
 import 'package:pea_chat/app/data/provider/remote/api.dart';
+import 'package:pea_chat/app/modules/home_module/home_controller.dart';
 import 'package:pea_chat/app/modules/landing_module/landing_controller.dart';
 import 'package:pea_chat/app/modules/landing_module/sub_module/video_call_module/video_call_controller.dart';
 import 'package:pea_chat/app/services/notification_service.dart';
@@ -39,14 +40,19 @@ class ChatController extends GetxController {
   var listMessageController = ScrollController();
 
   final LandingController _landingController = Get.find();
+  final HomeController _homeController = Get.find();
 
   @override
   void onInit() {
     // TODO: implement onInit
+    fetchData();
+    readMessage();
+
     _subscription = _landingController.messageController.stream.listen((event) {
       if (id == event.group!.id!) {
         if (event.author!.id != Session.instance.user!.id) {
           listMessage.insert(0, event);
+          readMessage();
         }
       } else {
         NotificationService().show(
@@ -63,10 +69,15 @@ class ChatController extends GetxController {
     super.onInit();
   }
 
-  void fetchData() {
-    id = int.parse(Get.parameters['id']!);
+  void readMessage() {
     Api.instance.readMessage(
         bearToken: Session.instance.tokenResp!.accessToken, groupId: id);
+  }
+
+  void fetchData() {
+    id = int.parse(Get.parameters['id']!);
+
+    readMessage();
 
     listMessage.value = [];
     Api.instance
@@ -91,7 +102,6 @@ class ChatController extends GetxController {
         Utils.showToast('Some thing wrong', Get.context!);
       }
     });
-    ;
   }
 
   fetchMessage({required int lastMessage, int size = 35}) {
@@ -128,25 +138,28 @@ class ChatController extends GetxController {
   }
 
   void sendMessage() {
-    var data = {
-      'groupId': id,
-      'uuid': currentGroup.value.uuid,
-      'text': inputTextController.text,
-    };
-    inputTextController.clear();
-    Api.instance
-        .sendText(
-            bearToken: Session.instance.tokenResp!.accessToken, data: data)
-        .then((value) {
-      listMessage.insert(0, value!.result!);
-    }).catchError((onError) {
-      if (onError is CustomException) {
-        CustomException e = onError;
-        Utils.showToast(e.message, Get.context!);
-      } else {
-        Utils.showToast('Some thing wrong', Get.context!);
-      }
-    });
+    if (inputTextController.text.isNotEmpty) {
+      var data = {
+        'groupId': id,
+        'uuid': currentGroup.value.uuid,
+        'text': inputTextController.text,
+      };
+      inputTextController.clear();
+      Api.instance
+          .sendText(
+              bearToken: Session.instance.tokenResp!.accessToken, data: data)
+          .then((value) {
+        listMessage.insert(0, value!.result!);
+        _homeController.fetchGroupList();
+      }).catchError((onError) {
+        if (onError is CustomException) {
+          CustomException e = onError;
+          Utils.showToast(e.message, Get.context!);
+        } else {
+          Utils.showToast('Some thing wrong', Get.context!);
+        }
+      });
+    }
   }
 
   void sendMedia(File image) async {
@@ -165,6 +178,7 @@ class ChatController extends GetxController {
             bearToken: Session.instance.tokenResp!.accessToken, data: formData)
         .then((value) {
       listMessage.insert(0, value!.result!);
+      _homeController.fetchGroupList();
     }).catchError((onError) {
       if (onError is CustomException) {
         CustomException e = onError;

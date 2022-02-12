@@ -18,4 +18,6 @@ abstract class Routes {
   static const CREATE_CHAT = '/create_chat'; // CreateChat page
   static const ADD_FRIEND = '/add_friend'; // AddFriend page
   static const FRIEND_REQUEST = '/friend_request'; // FriendRequest page
+  static const CHANGE_PASS = '/change_pass'; // ChangePass page
+  static const CHANGE_LANGUAGE = '/change_language'; // ChangeLanguage page
 }

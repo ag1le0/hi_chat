@@ -8,6 +8,7 @@ import 'package:pea_chat/app/services/notification_service.dart';
 
 import 'app/middleware/auth_controller.dart';
 import 'app/routes/app_pages.dart';
+import 'app/translations/app_translations.dart';
 import 'app/utils/dev_http_overrides.dart';
 
 void main() async {
@@ -30,6 +31,9 @@ class MyApp extends StatelessWidget {
       initialRoute: Routes.SPLASH,
       getPages: AppPages.pages,
       defaultTransition: Transition.native,
+      locale: AppTranslations.locale,
+      fallbackLocale: AppTranslations.fallbackLocale,
+      translations: AppTranslations(),
     );
   }
 }

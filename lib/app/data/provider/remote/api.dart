@@ -327,6 +327,23 @@ class Api {
     }
   }
 
+  Future<CommonResponse<bool>?> changePass(
+      String bearToken, String oldPass, String newPass) async {
+    try {
+      var response = await _dio.post('$baseUrl/api/user/change-password',
+          options: Options(headers: {
+            'Authorization': 'Bearer $bearToken',
+          }),
+          queryParameters: {
+            "oldPassword": oldPass,
+            "newPassword": newPass,
+          }).timeout(Duration(seconds: 15));
+      return CommonResponse.fromJson(response.data, (result) => result as bool);
+    } on DioError catch (dioEx) {
+      _catchDioEx(dioEx);
+    }
+  }
+
   Future<CommonResponse<User>?> getUserInfo(
       {bearToken, required int id}) async {
     try {
