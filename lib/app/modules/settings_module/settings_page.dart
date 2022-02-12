@@ -143,10 +143,10 @@ class ProfileHeader extends StatelessWidget {
           child: Stack(
             children: [
               Positioned.fill(
-                child: Avatar(
-                  media: Session.instance.user!.avatar,
-                  size: 112,
-                ),
+                child: Obx(() => Avatar(
+                      media: controller.avatar.value,
+                      size: 112,
+                    )),
               ),
               Positioned(
                   bottom: 0,

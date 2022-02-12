@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:pea_chat/app/data/model/media_data.dart';
 import 'package:pea_chat/app/data/provider/local/session.dart';
 import 'package:pea_chat/app/data/provider/remote/api.dart';
@@ -34,11 +35,11 @@ class Avatar extends StatelessWidget {
           clipBehavior: Clip.antiAlias,
           child: media != null
               ? CachedNetworkImage(
-                  fit: BoxFit.fill,
+                  fit: BoxFit.cover,
                   imageUrl: Api.host + media!.url!,
                   httpHeaders: {
                     'Authorization':
-                        'Bearer' + Session.instance.tokenResp!.accessToken!
+                        'Bearer ' + Session.instance.tokenResp!.accessToken!
                   },
                   errorWidget: (ctx, url, error) => Image.asset(
                     defaultImage,

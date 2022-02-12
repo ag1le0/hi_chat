@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:get/get.dart';
 import 'package:pea_chat/app/common/custom_exception.dart';
+import 'package:pea_chat/app/data/model/media_data.dart';
 import 'package:pea_chat/app/data/provider/local/session.dart';
 import 'package:pea_chat/app/data/provider/remote/api.dart';
 import 'package:pea_chat/app/middleware/auth_controller.dart';
@@ -14,6 +15,15 @@ import 'package:pea_chat/app/utils/utils.dart';
 class SettingsController extends GetxController {
   final LandingController _landingController = Get.find();
   AuthController authController = Get.find();
+
+  Rx<MediaResponse?> avatar = Rx(null);
+
+  @override
+  void onInit() {
+    avatar.value = Session.instance.user!.avatar;
+    // TODO: implement onInit
+    super.onInit();
+  }
 
   void logout() {
     Utils.showLoadingDialog();
@@ -62,6 +72,8 @@ class SettingsController extends GetxController {
       )
           .then((value) {
         Session.instance.user = value?.result;
+        avatar.value = Session.instance.user!.avatar;
+        Utils.showToast('Upload Success!', Get.context!);
       });
     }).catchError((onError) {
       if (onError is CustomException) {
